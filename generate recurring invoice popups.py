@@ -575,6 +575,15 @@ def view_invoice_recurring():
   # try:
   #   itemid =self.main_rec_tree.item(self.main_rec_tree.focus())["values"][1]
     # print(itemid)
+    # MyApp1object=MyApp1(tab4)
+    # MyApp1object.main_rec_tree
+    # itemid =MyApp1object.main_rec_tree.item(MyApp1object.main_rec_tree.focus())["values"][2]
+    # itemid = MyApp1object.main_rec_tree.item(MyApp1object.main_rec_tree.focus())["values"][1]
+    # print(itemid)
+    # for child in MyApp1object.main_rec_tree.get_children():
+    #   print(MyApp1object.main_rec_tree.item(child)["values"])
+  
+
     pop=Toplevel(recurring_midFrame)
     pop.title("Invoice")
     pop.geometry("950x690+150+0")
@@ -583,7 +592,7 @@ def view_invoice_recurring():
 
 
 
-  #select customer
+  
     def customer_invoice_recurring():
       cuselection=Toplevel()
       cuselection.title("Select Customer")
@@ -702,6 +711,20 @@ def view_invoice_recurring():
       cusventtree.heading("3",text="Tel.")
       cusventtree.heading("4",text="Contact Person")
       cusventtree.place(x=5, y=45)
+
+      sql_sel_cust = "SELECT * FROM Customer"
+      fbcursor.execute(sql_sel_cust)
+      customer_details = fbcursor.fetchall()
+
+      count=0
+      for i in customer_details:
+        if True:
+          cusventtree.insert(parent='',index='end',iid=i,text='',values=(i[0],i[4],i[10],i[8]))
+        else:
+          pass
+      count += 1
+     
+
 
 
       ctegorytree=ttk.Treeview(cuselection, height=27)
@@ -1061,7 +1084,8 @@ def view_invoice_recurring():
 
       okbtn=Button(Mark_Invoice,compound = LEFT,image=tick , text="Save payement", width=100).place(x=10, y=350)
       canbtn=Button(Mark_Invoice,compound = LEFT,image=cancel, text="Cancel", width=100).place(x=500, y=350)
-
+    
+   
       
     #voidinvoice
     def voidinvoice_recurring():
@@ -1128,26 +1152,60 @@ def view_invoice_recurring():
 
     fir1Frame=Frame(pop, height=180,bg="#f5f3f2")
     fir1Frame.pack(side="top", fill=X)
-
     labelframe1 = LabelFrame(fir1Frame,text="Customers",font=("arial",15))
     labelframe1.place(x=10,y=5,width=640,height=160)
-    order = Label(labelframe1, text="Order to").place(x=10,y=5)
-    e1 = ttk.Combobox(labelframe1, value="Hello",width=28).place(x=80,y=5)
+    def inv_to_combo(event):
+      inv_to_str = inv_to.get()
+      sql = "SELECT * FROM Customer WHERE businessname=%s"
+      val = (inv_to_str,)
+      fbcursor.execute(sql,val)
+      inv_sel_combo = fbcursor.fetchone()
+      ee2.delete('1.0',END)
+      ee2.insert('1.0',inv_sel_combo[5])
+      ee3.delete(0, END)
+      ee3.insert(0, inv_sel_combo[6])
+      ee4.delete('1.0',END)
+      ee4.insert('1.0',inv_sel_combo[7])
+      ee5.delete(0,END)
+      ee5.insert(0,inv_sel_combo[9])
+      ee6.delete(0,END)
+      ee6.insert(0,inv_sel_combo[12])
+
+
+    sql = "select businessname from Customer"
+    fbcursor.execute(sql,)
+    global pdata
+    pdata = fbcursor.fetchall()
+    global ee1,ee2,ee3,ee4,ee5,ee6
+   
+    invoice_to = Label(labelframe1, text="Order to").place(x=10,y=5)
+    inv_to = StringVar()
+    ee1 = ttk.Combobox(labelframe1,width=28,textvariable=inv_to)
+    ee1.place(x=80,y=5)
+    ee1.place(x=80,y=5)
+    ee1['values'] = pdata
+    ee1.bind("<<ComboboxSelected>>", inv_to_combo)
+    
     address=Label(labelframe1,text="Address").place(x=10,y=30)
-    e2=Text(labelframe1,width=23).place(x=80,y=30,height=70)
+    ee2=scrolledtext.Text(labelframe1, undo=True,width=23)
+    ee2.place(x=80,y=30,height=70)
     ship=Label(labelframe1,text="Ship to").place(x=342,y=5)
-    e3=Entry(labelframe1,width=30).place(x=402,y=3)
+    ee3=Entry(labelframe1,width=30)
+    ee3.place(x=402,y=3)
     address1=Label(labelframe1,text="Address").place(x=340,y=30)
-    e4=Text(labelframe1,width=23).place(x=402,y=30,height=70)
+    ee4=scrolledtext.Text(labelframe1, undo=True,width=23)
+    ee4.place(x=402,y=30,height=70)
 
     btn1=Button(labelframe1,width=3,height=2,compound = LEFT,text=">>").place(x=280, y=50)
     
     labelframe2 = LabelFrame(fir1Frame,text="")
     labelframe2.place(x=10,y=130,width=640,height=42)
     email=Label(labelframe2,text="Email").place(x=10,y=5)
-    e5=Entry(labelframe2,width=30).place(x=80,y=5)
+    ee5=Entry(labelframe2,width=30)
+    ee5.place(x=80,y=5)
     sms=Label(labelframe2,text="SMS Number").place(x=328,y=5)
-    e6=Entry(labelframe2,width=30).place(x=402,y=5)
+    ee6=Entry(labelframe2,width=30)
+    ee6.place(x=402,y=5)
       
     labelframe = LabelFrame(fir1Frame,text="Invoice",font=("arial",15))
     labelframe.place(x=652,y=5,width=290,height=170)
@@ -1443,7 +1501,7 @@ class MyApp1:
     rectotalinput=0
     j = 0
     for i in pdata:
-        self.main_rec_tree.insert(parent='', index='end', iid=i, text='', values=('',i[0], i[26], i[24], i[27], i[18], i[8], i[7], i[13], i[14], i[11],i[16],i[3]))
+        self.main_rec_tree.insert(parent='', index='end', iid=i, text='', values=('',i[0], i[26], i[24], i[27], i[18], i[8]))
         j += 1
     #     for line in main_rec_tree.get_children():
     #     recidsave1=main_rec_tree.item(line)['values'][6]
