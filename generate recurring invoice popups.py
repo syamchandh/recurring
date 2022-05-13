@@ -693,10 +693,71 @@ def view_invoice_recurring():
           
                 
 
+      def fetch_details():
+        cust_tree_item = cusventtree.item(cusventtree.focus())["values"][0]
+        sql = "SELECT * FROM Customer WHERE customerid=%s"
+        val = (cust_tree_item,)
+        fbcursor.execute(sql,val)
+        sel_cust_str = fbcursor.fetchone()
+        ee1.delete(0, END)
+        ee1.insert(0,sel_cust_str[4])
+        ee2.delete('1.0',END)
+        ee2.insert('1.0',sel_cust_str[5])
+        ee3.delete(0, END)
+        ee3.insert(0, sel_cust_str[6])
+        ee4.delete('1.0',END)
+        ee4.insert('1.0',sel_cust_str[7])
+        ee5.delete(0,END)
+        ee5.insert(0,sel_cust_str[9])
+        ee6.delete(0,END)
+        ee6.insert(0,sel_cust_str[12])
+
+        cuselection.destroy()  
+
+      def filter_customer():
+        
+        if cust_entry.get() == '':
+          sql = "SELECT * FROM Customer"
+          fbcursor.execute(sql,)
+          customer_details = fbcursor.fetchall()
+          
+          for record in cusventtree.get_children():
+            cusventtree.delete(record)
+
+          count = 0
+          for i in customer_details:
+            if True:
+              cusventtree.insert(parent='',index='end',iid=i,text='',values=(i[0],i[4],i[10],i[8]))
+            else:
+              pass
+          count += 1
+        else:
+          filter = cust_entry.get()
+          for record in cusventtree.get_children():
+            cusventtree.delete(record)
+
+          sql = "SELECT * FROM Customer WHERE businessname=%s"
+          val = (filter, )
+          fbcursor.execute(sql, val)
+          customer_details = fbcursor.fetchall()
+
+      
+          count=0
+          for i in customer_details:
+            if True:
+              cusventtree.insert(parent='', index='end', iid=i, text='', values=(i[0],i[4],i[10],i[8]))  
+            else:
+              pass
+          count += 1
       enter=Label(cuselection, text="Enter filter text").place(x=5, y=10)
-      e1=Entry(cuselection, width=20).place(x=110, y=10)
+      cust_filter_button=Button(cuselection, text='ok',command=filter_customer)
+      cust_filter_button.place(x=240, y=9,height=20,width=60)
+      cust_entry=Entry(cuselection, width=20)
+      cust_entry.place(x=110, y=10)
       text=Label(cuselection, text="Filtered column").place(x=340, y=10)
       e2=Entry(cuselection, width=20).place(x=450, y=10)
+
+      global cusventtree
 
       cusventtree=ttk.Treeview(cuselection, height=27)
       cusventtree["columns"]=["1","2","3", "4"]
@@ -739,7 +800,7 @@ def view_invoice_recurring():
       scrollbar.place(x=640, y=45, height=560)
       scrollbar.config( command=sub_rec_tree.yview )
 
-      btn1=Button(cuselection,compound = LEFT,image=tick ,text="ok", width=60).place(x=15, y=610)
+      btn1=Button(cuselection,compound = LEFT,image=tick ,text="ok", width=60,command=fetch_details).place(x=15, y=610)
       btn1=Button(cuselection,compound = LEFT,image=tick,text="Edit selected customer", width=150,command=create_newcustomer_recurring).place(x=250, y=610)
       btn1=Button(cuselection,compound = LEFT,image=tick, text="Add new customer", width=150,command=create_newcustomer_recurring).place(x=435, y=610)
       btn1=Button(cuselection,compound = LEFT,image=cancel ,text="Cancel", width=60).place(x=740, y=610)   
