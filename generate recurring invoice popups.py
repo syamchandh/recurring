@@ -714,6 +714,56 @@ def view_invoice_recurring():
 
         cuselection.destroy()  
 
+    # def inv_newline():
+    # #fetch new line item
+    #   def product_tree_fetch():
+    #     product_tree_item = product_sel_tree.item(product_sel_tree.focus())["values"][0]
+    #     sql = "SELECT * FROM Productservice WHERE Productserviceid=%s"
+    #     val = (product_tree_item,)
+    #     fbcursor.execute(sql,val)
+    #     sel_pro_str = fbcursor.fetchone()
+    #     sub_rec_tree.insert(parent='',index='end',iid=sel_pro_str,text='',values=(sel_pro_str[0],sel_pro_str[4],sel_pro_str[5],sel_pro_str[7],sel_pro_str[18]))
+    #     inv_newline_sel.destroy()
+    #   show_newline = ee1.get()
+    #   if show_newline == '':
+    #     messagebox.showinfo('F-Billing Revolution','Customer is required, please select customer before adding line item to invoice')
+    #   else:
+    #     inv_newline_sel=Toplevel()
+    #     inv_newline_sel.title("Product/Services")
+    #     inv_newline_sel.geometry("930x650+240+10")
+    #     inv_newline_sel.resizable(False, False)
+
+    #     global product_sel_tree
+
+    #     product_sel_tree=ttk.Treeview(inv_newline_sel, height=27)
+    #     product_sel_tree["columns"]=["1","2","3", "4","5"]
+    #     product_sel_tree.column("#0", width=35)
+    #     product_sel_tree.column("1", width=160)
+    #     product_sel_tree.column("2", width=160)
+    #     product_sel_tree.column("3", width=140)
+    #     product_sel_tree.column("4", width=70)
+    #     product_sel_tree.column("5", width=70)
+    #     product_sel_tree.heading("#0",text="")
+    #     product_sel_tree.heading("1",text="ID/SKU")
+    #     product_sel_tree.heading("2",text="Product/Service Name")
+    #     product_sel_tree.heading("3",text="Unit price")
+    #     product_sel_tree.heading("4",text="Service")
+    #     product_sel_tree.heading("5",text="Stock")
+    #     product_sel_tree.place(x=5, y=45)
+
+    #     sql = "SELECT * FROM Productservice"
+    #     fbcursor.execute(sql)
+    #     product_details = fbcursor.fetchall()
+
+    #     count = 0
+    #     for p in product_details:
+    #       if True:
+    #         product_sel_tree.insert(parent='',index='end',iid=p,text='',values=(p[0],p[4],p[7],p[12],p[13]))
+    #       else:
+    #         pass
+    #     count += 1
+    
+
       def filter_customer():
         
         if cust_entry.get() == '':
@@ -810,15 +860,120 @@ def view_invoice_recurring():
       
 
     #add new line item
-    def newline_recurring():
-      newselection=Toplevel()
-      newselection.title("Product/Services")
-      newselection.geometry("930x650+240+10")
-      newselection.resizable(False, False)
+    def recur_inv_newline():
+    #fetch new line item
+      def recur_product_tree_fetch():
+        product_tree_item = recur_product_sel_tree.item(recur_product_sel_tree.focus())["values"][0]
+        sql = "SELECT * FROM Productservice WHERE Productserviceid=%s"
+        val = (product_tree_item,)
+        fbcursor.execute(sql,val)
+        sel_pro_str = fbcursor.fetchone()
+        sub_rec_tree.insert(parent='',index='end',iid=sel_pro_str,text='',values=(sel_pro_str[0],sel_pro_str[4],sel_pro_str[5],sel_pro_str[7],sel_pro_str[18]))
+        recur_inv_newline_sel.destroy()
+      show_newline = ee1.get()
+      if show_newline == '':
+        messagebox.showinfo('F-Billing Revolution','Customer is required, please select customer before adding line item to invoice')
+      else:
+        recur_inv_newline_sel=Toplevel()
+        recur_inv_newline_sel.title("Product/Services")
+        recur_inv_newline_sel.geometry("930x650+240+10")
+        recur_inv_newline_sel.resizable(False, False)
 
+        global recur_product_sel_tree
 
-      #add new product
-      def product():  
+        recur_product_sel_tree=ttk.Treeview(recur_inv_newline_sel, height=27)
+        recur_product_sel_tree["columns"]=["1","2","3", "4","5"]
+        recur_product_sel_tree.column("#0", width=35)
+        recur_product_sel_tree.column("1", width=160)
+        recur_product_sel_tree.column("2", width=160)
+        recur_product_sel_tree.column("3", width=140)
+        recur_product_sel_tree.column("4", width=70)
+        recur_product_sel_tree.column("5", width=70)
+        recur_product_sel_tree.heading("#0",text="")
+        recur_product_sel_tree.heading("1",text="ID/SKU")
+        recur_product_sel_tree.heading("2",text="Product/Service Name")
+        recur_product_sel_tree.heading("3",text="Unit price")
+        recur_product_sel_tree.heading("4",text="Service")
+        recur_product_sel_tree.heading("5",text="Stock")
+        recur_product_sel_tree.place(x=5, y=45)
+
+        sql = "SELECT * FROM Productservice"
+        fbcursor.execute(sql)
+        product_details = fbcursor.fetchall()
+        print(product_details)
+
+        count = 0
+        for p in product_details:
+          if True:
+            recur_product_sel_tree.insert(parent='',index='end',iid=p,text='',values=(p[0],p[4],p[7],p[12],p[13]))
+          else:
+            pass
+        count += 1
+
+        enter=Label(recur_inv_newline_sel, text="Enter filter text").place(x=5, y=10)
+        pro_filter_entry_e1=Entry(recur_inv_newline_sel, width=20)
+        pro_filter_entry_e1.place(x=110, y=10)
+        pro_filter_button=Button(recur_inv_newline_sel, text='ok',command=filter_product)
+        pro_filter_button.place(x=240, y=9,height=20,width=60)
+        text=Label(recur_inv_newline_sel, text="Filtered column").place(x=340, y=10)
+        e2=Entry(recur_inv_newline_sel, width=20).place(x=450, y=10)
+        btn1=Button(recur_inv_newline_sel,compound = LEFT,image=tick ,text="ok",command=recur_product_tree_fetch, width=60).place(x=15, y=610)
+        btn2=Button(recur_inv_newline_sel,compound = LEFT,image=tick , text="Edit product/Service", width=150).place(x=250, y=610)
+        btn3=Button(recur_inv_newline_sel,compound = LEFT,image=tick , text="Add product/Service", width=150).place(x=435, y=610)
+        btn4=Button(recur_inv_newline_sel,compound = LEFT,image=cancel ,text="Cancel", width=60).place(x=740, y=610)
+        ctegorytree=ttk.Treeview(recur_inv_newline_sel, height=27)
+        ctegorytree["columns"]=["1"]
+        ctegorytree.column("#0", width=35, minwidth=20)
+        ctegorytree.column("1", width=205, minwidth=25, anchor=CENTER)    
+        ctegorytree.heading("#0",text="", anchor=W)
+        ctegorytree.heading("1",text="View filter by category", anchor=CENTER)
+        ctegorytree.place(x=660, y=45)
+
+        ctegorytree_list = Listbox(recur_inv_newline_sel,height=34,width=40,bg="white",activestyle="dotbox",fg="black",highlightbackground="white")
+        ctegorytree_list.insert(0,"               View all Products/Services")
+        ctegorytree_list.insert(1,"               View all Products")
+        ctegorytree_list.insert(2,"               View all Services")
+        ctegorytree_list.insert(3,"               Default")
+        ctegorytree_list.place(x=660,y=63)
+        ctegorytree_list.bind('<<ListboxSelect>>')
+
+    def filter_product():
+      pro_filter_entry_e1=0
+      if pro_filter_entry_e1.get() == '':
+        sql = "SELECT * FROM Productservice"
+        fbcursor.execute(sql)
+        product_details = fbcursor.fetchall()
+        for record in recur_product_sel_tree.get_children():
+          recur_product_sel_tree.delete(record)
+          
+        count = 0
+        for p in product_details:
+          if True:
+            recur_product_sel_tree.insert(parent='',index='end',iid=p,text='',values=(p[0],p[4],p[7],p[12],p[13]))
+          else:
+            pass
+        count += 1
+
+      else:
+        filter = pro_filter_entry_e1.get()
+        for record in recur_product_sel_tree.get_children():
+          recur_product_sel_tree.delete(record)
+        
+        sql = "SELECT * FROM Productservice WHERE name=%s"
+        val = (filter, )
+        fbcursor.execute(sql, val)
+        records = fbcursor.fetchall()
+  
+    
+        count=0
+        for i in records:
+          if True:
+            recur_product_sel_tree.insert(parent='', index='end', iid=i, text='', values=(i[0],i[4],i[10],i[8]))  
+          else:
+            pass
+        count += 1
+    
+      def new_product(): 
         top = Toplevel()  
         top.title("Add a new Product/Service")
         p2 = PhotoImage(file = 'images/fbicon.png')
@@ -975,51 +1130,40 @@ def view_invoice_recurring():
         
         removeButton = Button(imageFrame,compound = LEFT,image=cancel, text ="Remove Product Image",width=150)
         removeButton.place(x=400,y=450)
+      
+
+      
 
 
 
       
-                      
-      enter=Label(newselection, text="Enter filter text").place(x=5, y=10)
-      e1=Entry(newselection, width=20).place(x=110, y=10)
-      text=Label(newselection, text="Filtered column").place(x=340, y=10)
-      e2=Entry(newselection, width=20).place(x=450, y=10)
-
-      cusventtree=ttk.Treeview(newselection, height=27)
-      cusventtree["columns"]=["1","2","3", "4","5"]
-      cusventtree.column("#0", width=35)
-      cusventtree.column("1", width=160)
-      cusventtree.column("2", width=160)
-      cusventtree.column("3", width=140)
-      cusventtree.column("4", width=70)
-      cusventtree.column("5", width=70)
-      cusventtree.heading("#0",text="")
-      cusventtree.heading("1",text="ID/SKU")
-      cusventtree.heading("2",text="Product/Service Name")
-      cusventtree.heading("3",text="Unit price")
-      cusventtree.heading("4",text="Service")
-      cusventtree.heading("5",text="Stock")
-      cusventtree.place(x=5, y=45)
-
-
-      ctegorytree=ttk.Treeview(newselection, height=27)
-      ctegorytree["columns"]=["1"]
-      ctegorytree.column("#0", width=35, minwidth=20)
-      ctegorytree.column("1", width=205, minwidth=25, anchor=CENTER)    
-      ctegorytree.heading("#0",text="", anchor=W)
-      ctegorytree.heading("1",text="View filter by category", anchor=CENTER)
-      ctegorytree.place(x=660, y=45)
-
-      scrollbar = Scrollbar(newselection)
-      scrollbar.place(x=640, y=45, height=560)
-      scrollbar.config( command=sub_rec_tree.yview )
+                 
     
 
-      btn1=Button(newselection,compound = LEFT,image=tick ,text="ok", width=60).place(x=15, y=610)
-      btn1=Button(newselection,compound = LEFT,image=tick , text="Edit product/Service", width=150,command=product).place(x=250, y=610)
-      btn1=Button(newselection,compound = LEFT,image=tick , text="Add product/Service", width=150,command=product).place(x=435, y=610)
-      btn1=Button(newselection,compound = LEFT,image=cancel ,text="Cancel", width=60).place(x=740, y=610)
+      # cusventtree=ttk.Treeview(inv_newline_sel, height=27)
+      # cusventtree["columns"]=["1","2","3", "4","5"]
+      # cusventtree.column("#0", width=35)
+      # cusventtree.column("1", width=160)
+      # cusventtree.column("2", width=160)
+      # cusventtree.column("3", width=140)
+      # cusventtree.column("4", width=70)
+      # cusventtree.column("5", width=70)
+      # cusventtree.heading("#0",text="")
+      # cusventtree.heading("1",text="ID/SKU")
+      # cusventtree.heading("2",text="Product/Service Name")
+      # cusventtree.heading("3",text="Unit price")
+      # cusventtree.heading("4",text="Service")
+      # cusventtree.heading("5",text="Stock")
+      # cusventtree.place(x=5, y=45)
 
+
+      
+      # scrollbar = Scrollbar(inv_newline_sel)
+      # scrollbar.place(x=640, y=45, height=560)
+      # scrollbar.config( command=sub_rec_tree.yview )
+    
+
+     
 
 
   # #preview message if customer  is not
@@ -1171,7 +1315,7 @@ def view_invoice_recurring():
     w = Canvas(firFrame, width=1, height=65, bg="#b3b3b3", bd=0)
     w.pack(side="left", padx=5)
 
-    add= Button(firFrame,compound="top", text="Add new\nline item",relief=RAISED, image=addnew,bg="#f5f3f2", fg="black", height=55, bd=1, width=55,command=newline_recurring)
+    add= Button(firFrame,compound="top", text="Add new\nline item",relief=RAISED, image=addnew,bg="#f5f3f2", fg="black", height=55, bd=1, width=55,command=recur_inv_newline)
     add.pack(side="left", pady=3, ipadx=4)
 
     dele= Button(firFrame,compound="top", text="Delete line\nitem",relief=RAISED, image=delete,bg="#f5f3f2", fg="black", height=55, bd=1, width=55,command=delete_recurring)
