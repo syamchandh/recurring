@@ -913,14 +913,239 @@ def view_invoice_recurring():
         enter=Label(recur_inv_newline_sel, text="Enter filter text").place(x=5, y=10)
         pro_filter_entry_e1=Entry(recur_inv_newline_sel, width=20)
         pro_filter_entry_e1.place(x=110, y=10)
+
+        #filtering product
+        def filter_product():
+          # pro_filter_entry_e1=0
+          if pro_filter_entry_e1.get() == '':
+            sql = "SELECT * FROM Productservice"
+            fbcursor.execute(sql)
+            product_details = fbcursor.fetchall()
+            for record in recur_product_sel_tree.get_children():
+              recur_product_sel_tree.delete(record)
+              
+            count = 0
+            for p in product_details:
+              if True:
+                recur_product_sel_tree.insert(parent='',index='end',iid=p,text='',values=(p[0],p[4],p[7],p[12],p[13]))
+              else:
+                pass
+            count += 1
+
+          else:
+            filter = pro_filter_entry_e1.get()
+            for record in recur_product_sel_tree.get_children():
+              recur_product_sel_tree.delete(record)
+            
+            sql = "SELECT * FROM Productservice WHERE name=%s"
+            val = (filter, )
+            fbcursor.execute(sql, val)
+            records = fbcursor.fetchall()
+      
+        
+            count=0
+            for i in records:
+              if True:
+                recur_product_sel_tree.insert(parent='', index='end', iid=i, text='', values=(i[0],i[4],i[10],i[8]))  
+              else:
+                pass
+            count += 1
         pro_filter_button=Button(recur_inv_newline_sel, text='ok',command=filter_product)
         pro_filter_button.place(x=240, y=9,height=20,width=60)
         text=Label(recur_inv_newline_sel, text="Filtered column").place(x=340, y=10)
         e2=Entry(recur_inv_newline_sel, width=20).place(x=450, y=10)
         btn1=Button(recur_inv_newline_sel,compound = LEFT,image=tick ,text="ok",command=recur_product_tree_fetch, width=60).place(x=15, y=610)
         btn2=Button(recur_inv_newline_sel,compound = LEFT,image=tick , text="Edit product/Service", width=150).place(x=250, y=610)
-        btn3=Button(recur_inv_newline_sel,compound = LEFT,image=tick , text="Add product/Service", width=150).place(x=435, y=610)
-        btn4=Button(recur_inv_newline_sel,compound = LEFT,image=cancel ,text="Cancel", width=60).place(x=740, y=610)
+
+        def new_product():  
+          top = Toplevel()  
+          top.title("Add a new Product/Service")
+          p2 = PhotoImage(file = 'images/fbicon.png')
+          top.iconphoto(False, p2)
+          top.geometry("700x550+390+15")
+          tabControl = ttk.Notebook(top)
+          s = ttk.Style()
+          s.theme_use('default')
+          s.configure('TNotebook.Tab', background="#999999",padding=10,bd=0)
+              
+
+          tab1 = ttk.Frame(tabControl)
+          tab2 = ttk.Frame(tabControl)
+        
+          tabControl.add(tab1,compound = LEFT, text ='Product/Service')
+          tabControl.add(tab2,compound = LEFT, text ='Product Image')
+        
+          tabControl.pack(expand = 1, fill ="both")
+        
+          innerFrame = Frame(tab1,bg="#f5f3f2", relief=GROOVE)
+          innerFrame.pack(side="top",fill=BOTH)
+
+          Customerlabelframe = LabelFrame(innerFrame,text="Product/Service",width=580,height=485)
+          Customerlabelframe.pack(side="top",fill=BOTH,padx=10)
+
+          add_pro_code_label=Label(Customerlabelframe,text="Code or SKU:",fg="blue",pady=10,padx=10)
+          add_pro_code_label.place(x=20,y=0)
+          add_pro_code_entry = Entry(Customerlabelframe,width=35)
+          add_pro_code_entry.place(x=120,y=8)
+
+          checkvarStatus=IntVar()
+          add_pro_status=Label(Customerlabelframe,text="Status:")
+          add_pro_status.place(x=500,y=8)
+          add_pro_checkbtn_active = Checkbutton(Customerlabelframe,
+                            variable = checkvarStatus,text="Active",compound="right",
+                            onvalue =0 ,
+                            offvalue = 1,
+                          
+                            width = 10)
+
+          add_pro_checkbtn_active.place(x=550,y=5)
+
+          add_pro_cat=Label(Customerlabelframe,text="Category:",pady=5,padx=10)
+          add_pro_cat.place(x=20,y=40)
+          n = StringVar()
+          add_pro_country = ttk.Combobox(Customerlabelframe, width = 40, textvariable = n )
+          
+          add_pro_country['values'] = ('Default',' India',' China',' Australia',' Nigeria',' Malaysia',' Italy',' Turkey',)
+          
+          add_pro_country.place(x=120,y=45)
+          add_pro_country.current(0)
+
+
+          add_pro_name_label=Label(Customerlabelframe,text="Name :",fg="blue",pady=5,padx=10)
+          add_pro_name_label.place(x=20,y=70)
+          add_pro_name_entry = Entry(Customerlabelframe,width=60)
+          add_pro_name_entry.place(x=120,y=75)
+
+          add_pro_des_label=Label(Customerlabelframe,text="Description :",pady=5,padx=10)
+          add_pro_des_label.place(x=20,y=100)
+          add_pro_des_entry = Entry(Customerlabelframe,width=60)
+          add_pro_des_entry.place(x=120,y=105)
+
+          uval = IntVar(Customerlabelframe, value='$0.00')
+          add_pro_unit_label=Label(Customerlabelframe,text="Unit Price:",fg="blue",pady=5,padx=10)
+          add_pro_unit_label.place(x=20,y=130)
+          add_pro_unit_entry = Entry(Customerlabelframe,width=20,textvariable=uval)
+          add_pro_unit_entry.place(x=120,y=135)
+
+          pcsval = IntVar(Customerlabelframe, value='$0.00')
+          add_pro_pcs_label=Label(Customerlabelframe,text="Pcs/Weight:",fg="blue",pady=5,padx=10)
+          add_pro_pcs_label.place(x=320,y=140)
+          add_pro_pcs_entry = Entry(Customerlabelframe,width=20,textvariable=pcsval)
+          add_pro_pcs_entry.place(x=410,y=140)
+
+          costval = IntVar(Customerlabelframe, value='$0.00')
+          add_pro_cost_label=Label(Customerlabelframe,text="Cost:",pady=5,padx=10)
+          add_pro_cost_label.place(x=20,y=160)
+          add_pro_cost_entry = Entry(Customerlabelframe,width=20,textvariable=costval)
+          add_pro_cost_entry.place(x=120,y=165)
+
+          priceval = IntVar(Customerlabelframe, value='$0.00')
+          add_pro_price_label=Label(Customerlabelframe,text="(Price Cost):",pady=5,padx=10)
+          add_pro_price_label.place(x=20,y=190)
+          add_pro_price_entry = Entry(Customerlabelframe,width=20,textvariable=priceval)
+          add_pro_price_entry.place(x=120,y=195)
+
+          checkvarStatus2=IntVar()
+        
+          add_pro_checkbtn_tax = Checkbutton(Customerlabelframe,variable = checkvarStatus2,
+                            text="Taxable Tax1rate",compound="right",
+                            onvalue =0 ,
+                            offvalue = 1,
+                            height=2,
+                            width = 12)
+
+          add_pro_checkbtn_tax.place(x=415,y=170)
+
+
+          checkvarStatus3=IntVar()
+        
+          add_pro_checkbtn_no = Checkbutton(Customerlabelframe,variable = checkvarStatus3,
+                            text="No stock Control",
+                            onvalue =1 ,
+                            offvalue = 0,
+                            height=3,
+                            width = 15)
+
+          add_pro_checkbtn_no.place(x=40,y=220)
+
+
+          stockval = IntVar(Customerlabelframe)
+          add_pro_stock_label=Label(Customerlabelframe,text="Stock:",pady=5,padx=10)
+          add_pro_stock_label.place(x=90,y=260)
+          add_pro_stock_entry = Entry(Customerlabelframe,width=15,textvariable=stockval)
+          add_pro_stock_entry.place(x=150,y=265)
+
+          lowval = IntVar(Customerlabelframe)
+          add_pro_low_label=Label(Customerlabelframe,text="Low Stock Warning Limit:",pady=5,padx=10)
+          add_pro_low_label.place(x=300,y=260)
+          add_pro_low_entry = Entry(Customerlabelframe,width=10,textvariable=lowval)
+          add_pro_low_entry.place(x=495,y=265)
+
+        
+          add_pro_ware_label=Label(Customerlabelframe,text="Warehouse:",pady=5,padx=10)
+          add_pro_ware_label.place(x=60,y=290)
+          add_pro_ware_entry = Entry(Customerlabelframe,width=50)
+          add_pro_ware_entry.place(x=150,y=295)
+
+          add_pro_pnote_label=Label(Customerlabelframe,text="Private notes(not appears on invoice):",pady=5,padx=10)
+          add_pro_pnote_label.place(x=20,y=330)
+
+          add_pro_pnote_scroll = scrolledtext.ScrolledText(Customerlabelframe, undo=True,width=62,height=4)
+          add_pro_pnote_scroll.place(x=32,y=358)
+
+          def add_new_product():
+            sku = add_pro_code_entry.get()
+            category = add_pro_country.get()
+            name = add_pro_name_entry.get()
+            description = add_pro_des_entry.get()
+            unitprice = add_pro_unit_entry.get()
+            peices = add_pro_pcs_entry.get()
+            cost = add_pro_cost_entry.get()
+            priceminuscost = add_pro_price_entry.get()
+            stock = add_pro_stock_entry.get()
+            stocklimit = add_pro_low_entry.get()
+            warehouse = add_pro_ware_entry.get()
+            privatenote = add_pro_pnote_scroll.get("1.0",'end-1c')
+            status = checkvarStatus.get()
+            taxable = checkvarStatus2.get()
+            serviceornot = checkvarStatus3.get()
+            sql='INSERT INTO Productservice (sku,category,name,description,unitprice,peices,cost,priceminuscost,stock,stocklimit,warehouse,privatenote,status,taxable,serviceornot) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)' #adding values into db
+            val=(sku,category,name,description,unitprice,peices,cost,priceminuscost,stock,stocklimit,warehouse,privatenote,status,taxable,serviceornot)
+            fbcursor.execute(sql,val)
+            fbilldb.commit()
+            top.destroy()
+            messagebox.showinfo("F-Billing Revolution","Product registered successfully")
+
+          # Cancel add new product
+          def cancel_add():
+            top.destroy()
+
+          add_pro_ok_btn = Button(innerFrame,compound = LEFT,image=tick , text ="Ok",width=60,command=add_new_product)
+          add_pro_ok_btn.pack(side=LEFT)
+
+          def cancel_add():
+            top.destroy()
+
+          add_pro_cancel_btn = Button(innerFrame,compound = LEFT,image=cancel ,text="Cancel",width=60,command=cancel_add)
+          add_pro_cancel_btn.pack(side=RIGHT)
+
+          imageFrame = Frame(tab2, relief=GROOVE,height=580)
+          imageFrame.pack(side="top",fill=BOTH)
+
+          browseimg=Label(imageFrame,text=" Browse for product image file(recommended image type:JPG,size 480x320 pixels) ",bg='#f5f3f2')
+          browseimg.place(x=15,y=35)
+
+          browsebutton=Button(imageFrame,text = 'Browse')
+          browsebutton.place(x=580,y=30,height=30,width=50)
+          
+          removeButton = Button(imageFrame,compound = LEFT,image=cancel, text ="Remove Product Image",width=150)
+          removeButton.place(x=400,y=450)
+        btn3=Button(recur_inv_newline_sel,compound = LEFT,image=tick , text="Add product/Service",command=new_product, width=150).place(x=435, y=610)
+        
+        def cancel_pro_dis_page():
+          recur_inv_newline_sel.destroy()
+
+        btn4=Button(recur_inv_newline_sel,compound = LEFT,image=cancel ,text="Cancel",command=cancel_pro_dis_page, width=60).place(x=740, y=610)
         ctegorytree=ttk.Treeview(recur_inv_newline_sel, height=27)
         ctegorytree["columns"]=["1"]
         ctegorytree.column("#0", width=35, minwidth=20)
@@ -937,200 +1162,9 @@ def view_invoice_recurring():
         ctegorytree_list.place(x=660,y=63)
         ctegorytree_list.bind('<<ListboxSelect>>')
 
-    def filter_product():
-      pro_filter_entry_e1=0
-      if pro_filter_entry_e1.get() == '':
-        sql = "SELECT * FROM Productservice"
-        fbcursor.execute(sql)
-        product_details = fbcursor.fetchall()
-        for record in recur_product_sel_tree.get_children():
-          recur_product_sel_tree.delete(record)
-          
-        count = 0
-        for p in product_details:
-          if True:
-            recur_product_sel_tree.insert(parent='',index='end',iid=p,text='',values=(p[0],p[4],p[7],p[12],p[13]))
-          else:
-            pass
-        count += 1
-
-      else:
-        filter = pro_filter_entry_e1.get()
-        for record in recur_product_sel_tree.get_children():
-          recur_product_sel_tree.delete(record)
-        
-        sql = "SELECT * FROM Productservice WHERE name=%s"
-        val = (filter, )
-        fbcursor.execute(sql, val)
-        records = fbcursor.fetchall()
-  
+      
     
-        count=0
-        for i in records:
-          if True:
-            recur_product_sel_tree.insert(parent='', index='end', iid=i, text='', values=(i[0],i[4],i[10],i[8]))  
-          else:
-            pass
-        count += 1
-    
-      def new_product(): 
-        top = Toplevel()  
-        top.title("Add a new Product/Service")
-        p2 = PhotoImage(file = 'images/fbicon.png')
-        top.iconphoto(False, p2)
-      
-        top.geometry("700x550+390+15")
-        tabControl = ttk.Notebook(top)
-        s = ttk.Style()
-        s.theme_use('default')
-        s.configure('TNotebook.Tab', background="#999999",padding=10,bd=0)
-
-
-        tab1 = ttk.Frame(tabControl)
-        tab2 = ttk.Frame(tabControl)
-      
-        tabControl.add(tab1,compound = LEFT, text ='Product/Service')
-        tabControl.add(tab2,compound = LEFT, text ='Product Image')
-      
-        tabControl.pack(expand = 1, fill ="both")
-      
-        innerFrame = Frame(tab1,bg="#f5f3f2", relief=GROOVE)
-        innerFrame.pack(side="top",fill=BOTH)
-
-        Customerlabelframe = LabelFrame(innerFrame,text="Product/Service",width=580,height=485)
-        Customerlabelframe.pack(side="top",fill=BOTH,padx=10)
-
-        code1=Label(Customerlabelframe,text="Code or SKU:",fg="blue",pady=10,padx=10)
-        code1.place(x=20,y=0)
-        codeentry = Entry(Customerlabelframe,width=35)
-        codeentry.place(x=120,y=8)
-
-        checkvarStatus=IntVar()
-        status1=Label(Customerlabelframe,text="Status:")
-        status1.place(x=500,y=8)
-        Button1 = Checkbutton(Customerlabelframe,
-                          variable = checkvarStatus,text="Active",compound="right",
-                          onvalue =0 ,
-                          offvalue = 1,
-                        
-                          width = 10)
-
-        Button1.place(x=550,y=5)
-
-        category1=Label(Customerlabelframe,text="Category:",pady=5,padx=10)
-        category1.place(x=20,y=40)
-        n = StringVar()
-        country = ttk.Combobox(Customerlabelframe, width = 40, textvariable = n )
-        
-        country['values'] = ('Default',' India',' China',' Australia',' Nigeria',' Malaysia',' Italy',' Turkey',)
-        
-        country.place(x=120,y=45)
-        country.current(0)
-
-
-        name1=Label(Customerlabelframe,text="Name :",fg="blue",pady=5,padx=10)
-        name1.place(x=20,y=70)
-        nameentry = Entry(Customerlabelframe,width=60)
-        nameentry.place(x=120,y=75)
-
-        des1=Label(Customerlabelframe,text="Description :",pady=5,padx=10)
-        des1.place(x=20,y=100)
-        desentry = Entry(Customerlabelframe,width=60)
-        desentry.place(x=120,y=105)
-
-        uval = IntVar(Customerlabelframe, value='$0.00')
-        unit1=Label(Customerlabelframe,text="Unit Price:",fg="blue",pady=5,padx=10)
-        unit1.place(x=20,y=130)
-        unitentry = Entry(Customerlabelframe,width=20,textvariable=uval)
-        unitentry.place(x=120,y=135)
-
-        pcsval = IntVar(Customerlabelframe, value='$0.00')
-        pcs1=Label(Customerlabelframe,text="Pcs/Weight:",fg="blue",pady=5,padx=10)
-        pcs1.place(x=320,y=140)
-        pcsentry = Entry(Customerlabelframe,width=20,textvariable=pcsval)
-        pcsentry.place(x=410,y=140)
-
-        costval = IntVar(Customerlabelframe, value='$0.00')
-        cost1=Label(Customerlabelframe,text="Cost:",pady=5,padx=10)
-        cost1.place(x=20,y=160)
-        costentry = Entry(Customerlabelframe,width=20,textvariable=costval)
-        costentry.place(x=120,y=165)
-
-        priceval = IntVar(Customerlabelframe, value='$0.00')
-        price1=Label(Customerlabelframe,text="(Price Cost):",pady=5,padx=10)
-        price1.place(x=20,y=190)
-        priceentry = Entry(Customerlabelframe,width=20,textvariable=priceval)
-        priceentry.place(x=120,y=195)
-
-        checkvarStatus2=IntVar()
-      
-        Button2 = Checkbutton(Customerlabelframe,variable = checkvarStatus2,
-                          text="Taxable Tax1rate",compound="right",
-                          onvalue =0 ,
-                          offvalue = 1,
-                          height=2,
-                          width = 12)
-
-        Button2.place(x=415,y=170)
-
-
-        checkvarStatus3=IntVar()
-      
-        Button3 = Checkbutton(Customerlabelframe,variable = checkvarStatus3,
-                          text="No stock Control",
-                          onvalue =1 ,
-                          offvalue = 0,
-                          height=3,
-                          width = 15)
-
-        Button3.place(x=40,y=220)
-
-
-        stockval = IntVar(Customerlabelframe, value='0')
-        stock1=Label(Customerlabelframe,text="Stock:",pady=5,padx=10)
-        stock1.place(x=90,y=260)
-        stockentry = Entry(Customerlabelframe,width=15,textvariable=stockval)
-        stockentry.place(x=150,y=265)
-
-        lowval = IntVar(Customerlabelframe, value='0')
-        low1=Label(Customerlabelframe,text="Low Stock Warning Limit:",pady=5,padx=10)
-        low1.place(x=300,y=260)
-        lowentry = Entry(Customerlabelframe,width=10,textvariable=lowval)
-        lowentry.place(x=495,y=265)
-
-      
-        ware1=Label(Customerlabelframe,text="Warehouse:",pady=5,padx=10)
-        ware1.place(x=60,y=290)
-        wareentry = Entry(Customerlabelframe,width=50)
-        wareentry.place(x=150,y=295)
-
-        text1=Label(Customerlabelframe,text="Private notes(not appears on invoice):",pady=5,padx=10)
-        text1.place(x=20,y=330)
-
-        txt = scrolledtext.ScrolledText(Customerlabelframe, undo=True,width=62,height=4)
-        txt.place(x=32,y=358)
-
-
-
-
-        okButton = Button(innerFrame,compound = LEFT,image=tick , text ="Ok",width=60)
-        okButton.pack(side=LEFT)
-
-        cancelButton = Button(innerFrame,compound = LEFT,image=cancel ,text="Cancel",width=60)
-        cancelButton.pack(side=RIGHT)
-
-        imageFrame = Frame(tab2, relief=GROOVE,height=580)
-        imageFrame.pack(side="top",fill=BOTH)
-
-        browseimg=Label(imageFrame,text=" Browse for product image file(recommended image type:JPG,size 480x320 pixels) ",bg='#f5f3f2')
-        browseimg.place(x=15,y=35)
-
-        browsebutton=Button(imageFrame,text = 'Browse')
-        browsebutton.place(x=580,y=30,height=30,width=50)
-        
-        removeButton = Button(imageFrame,compound = LEFT,image=cancel, text ="Remove Product Image",width=150)
-        removeButton.place(x=400,y=450)
-      
+     
 
       
 
@@ -1297,9 +1331,10 @@ def view_invoice_recurring():
       messagebox.askyesno("F-Billing Revolution","Are you sure to avoid this invoice?\nAll products will be placed back into stock and all payemnts will be voided.")
     
     #delete line item  
-    def delete_recurring():
-      messagebox.showerror("F-Billing Revolution","Customer is required,please select customer before deleting line item .")
+    def delete_recurring_line_item():
       
+      selected_line_item = sub_rec_tree.selection()[0]
+      sub_rec_tree.delete(selected_line_item)
       
 
     firFrame=Frame(pop, bg="#f5f3f2", height=60)
@@ -1318,7 +1353,7 @@ def view_invoice_recurring():
     add= Button(firFrame,compound="top", text="Add new\nline item",relief=RAISED, image=addnew,bg="#f5f3f2", fg="black", height=55, bd=1, width=55,command=recur_inv_newline)
     add.pack(side="left", pady=3, ipadx=4)
 
-    dele= Button(firFrame,compound="top", text="Delete line\nitem",relief=RAISED, image=delete,bg="#f5f3f2", fg="black", height=55, bd=1, width=55,command=delete_recurring)
+    dele= Button(firFrame,compound="top", text="Delete line\nitem",relief=RAISED, image=delete,bg="#f5f3f2", fg="black", height=55, bd=1, width=55,command=delete_recurring_line_item)
     dele.pack(side="left", pady=3, ipadx=4)
 
     w = Canvas(firFrame, width=1, height=65, bg="#b3b3b3", bd=0)
@@ -1482,9 +1517,27 @@ def view_invoice_recurring():
     myNotebook.add(documentFrame,compound="left",  text="Documents")
     myNotebook.pack(expand = 1, fill ="both")  
 
+    sql = "select extracostname from invoice"
+    fbcursor.execute(sql,)
+    exdata = fbcursor.fetchall()  
+  ##
+  #   itemid = main_rec_tree.items(main_rec_tree.focus())["values"][1]
+  #   sql = "select * from invoice where invoiceid = %s"
+  #   val = (itemid, )
+  #   fbcursor.execute(sql, val)
+  #   orbtdata = fbcursor.fetchone()
+  # ##
+
     labelframe1 = LabelFrame(invoiceFrame,text="",font=("arial",15))
     labelframe1.place(x=1,y=1,width=800,height=170)
+
     cost1=Label(labelframe1,text="Extra cost name").place(x=2,y=5)
+    extra4=ttk.Combobox(labelframe1, value=exdata,width=20)
+    extra4.place(x=115,y=5)
+  #   extra4['values']= ["Shipping and handling", "Postage and handling", "Delivery cost"] 
+  #   extra4.delete(0,'end')
+  #   extra4.insert(0, orbtdata[11])
+
     e1=ttk.Combobox(labelframe1, value="",width=20).place(x=115,y=5)
     rate=Label(labelframe1,text="Discount rate").place(x=370,y=5)
     e2=Entry(labelframe1,width=6).place(x=460,y=5)
@@ -1678,27 +1731,26 @@ class MyApp1:
       )
 
     
-    self.main_rec_tree = ttk.Treeview(self.left_frame, columns = (1,2,3,4,5,6,7), height = 15, show = "headings")
-    self.main_rec_tree.pack(side = 'top')
-    self.main_rec_tree.heading(1)
-    self.main_rec_tree.heading(2, text="Invoice#")
-    self.main_rec_tree.heading(3, text="Next Invoice")
-    self.main_rec_tree.heading(4, text="Recurring Period")
-    self.main_rec_tree.heading(5, text="Stop After")
-    self.main_rec_tree.heading(6, text="Customer Name")
-    self.main_rec_tree.heading(7, text="Invoice Total")  
-    self.main_rec_tree.column(1, width = 40)
-    self.main_rec_tree.column(2, width = 200)
-    self.main_rec_tree.column(3, width = 200)
-    self.main_rec_tree.column(4, width = 200)
-    self.main_rec_tree.column(5, width = 200)
-    self.main_rec_tree.column(6, width = 340)
-    self.main_rec_tree.column(7, width = 190)
-  
+    main_rec_tree = ttk.Treeview(self.left_frame, columns = (1,2,3,4,5,6,7), height = 15, show = "headings")
+    main_rec_tree.pack(side = 'top')
+    main_rec_tree.heading(1)
+    main_rec_tree.heading(2, text="Invoice#")
+    main_rec_tree.heading(3, text="Next Invoice")
+    main_rec_tree.heading(4, text="Recurring Period")
+    main_rec_tree.heading(5, text="Stop After")
+    main_rec_tree.heading(6, text="Customer Name")
+    main_rec_tree.heading(7, text="Invoice Total")  
+    main_rec_tree.column(1, width = 40)
+    main_rec_tree.column(2, width = 200)
+    main_rec_tree.column(3, width = 200)
+    main_rec_tree.column(4, width = 200)
+    main_rec_tree.column(5, width = 200)
+    main_rec_tree.column(6, width = 340)
+    main_rec_tree.column(7, width = 190)
 
     scrollbar = Scrollbar(self.left_frame)
     scrollbar.place(x=1008+300+25, y=0, height=300+20)
-    scrollbar.config( command=self.main_rec_tree.yview )
+    scrollbar.config( command=main_rec_tree.yview )
     sql = "select * from invoice where (recurring_period_month =%s OR recurring_period_month =%s)AND status!=%s"
     val = ('month(s)', 'day(s)', 'void')
     fbcursor.execute(sql,val)
@@ -1706,7 +1758,7 @@ class MyApp1:
     rectotalinput=0
     j = 0
     for i in pdata:
-        self.main_rec_tree.insert(parent='', index='end', iid=i, text='', values=('',i[0], i[26], i[24], i[27], i[18], i[8]))
+        main_rec_tree.insert(parent='', index='end', iid=i, text='', values=('',i[0], i[26], i[24], i[27], i[18], i[8]))
         j += 1
     #     for line in main_rec_tree.get_children():
     #     recidsave1=main_rec_tree.item(line)['values'][6]
@@ -1761,7 +1813,7 @@ class MyApp1:
 
     scrollbar = Scrollbar(self.left_frame)
     scrollbar.place(x=1004+300+25, y=360, height=195)
-    scrollbar.config( command=self.main_rec_tree.yview )
+    scrollbar.config( command=main_rec_tree.yview )
        
 myapp = MyApp1(tab4)
 
