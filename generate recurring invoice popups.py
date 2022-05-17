@@ -838,13 +838,60 @@ def view_invoice_recurring():
 
 
 
-      ctegorytree=ttk.Treeview(cuselection, height=27)
-      ctegorytree["columns"]=["1"]
-      ctegorytree.column("#0", width=35, minwidth=20)
-      ctegorytree.column("1", width=205, minwidth=25, anchor=CENTER)    
-      ctegorytree.heading("#0",text="", anchor=W)
-      ctegorytree.heading("1",text="View filter by category", anchor=CENTER)
-      ctegorytree.place(x=660, y=45)
+      rec_cus_ctegorytree=ttk.Treeview(cuselection, height=27)
+      rec_cus_ctegorytree["columns"]=["1"]
+      rec_cus_ctegorytree.column("#0", width=35, minwidth=20)
+      rec_cus_ctegorytree.column("1", width=205, minwidth=25, anchor=CENTER)    
+      rec_cus_ctegorytree.heading("#0",text="", anchor=W)
+      rec_cus_ctegorytree.heading("1",text="View filter by category", anchor=CENTER)
+      rec_cus_ctegorytree.place(x=660, y=45)
+
+      def recur_list_filter_customer(event):
+        selected_cust_indices = recur_cust_fil_cat_list.curselection()
+        selected_cust_filter = ",".join([recur_cust_fil_cat_list.get(i) for i in selected_cust_indices])
+
+        if selected_cust_filter == "               View all records" or selected_cust_filter == "               View only Client/Vendor" or selected_cust_filter == "               Default":
+          cust_all_sql = "SELECT * FROM Customer"
+          fbcursor.execute(cust_all_sql)
+          cust_all_data = fbcursor.fetchall()
+          for record in cusventtree.get_children():
+            cusventtree.delete(record)
+          count_all = 0
+          for i in cust_all_data:
+            cusventtree.insert(parent='',index='end',iid=i,text='',values=(i[0],i[4],i[10],i[8]))
+          count_all += 1
+        elif selected_cust_filter == "               View only Client type":
+          client_sql = "SELECT * FROM Customer WHERE customertype=%s"
+          client_val = ('Client',)
+          fbcursor.execute(client_sql,client_val)
+          client_data = fbcursor.fetchall()
+          for record in cusventtree.get_children():
+            cusventtree.delete(record)
+          count_c = 0
+          for i in client_data:
+            cusventtree.insert(parent='',index='end',iid=i,text='',values=(i[0],i[4],i[10],i[8]))
+          count_c += 1
+        else:
+          vendor_sql = "SELECT * FROM Customer WHERE customertype=%s"
+          vendor_val = ('Vendor',)
+          fbcursor.execute(vendor_sql,vendor_val)
+          vendor_data = fbcursor.fetchall()
+          for record in cusventtree.get_children():
+            cusventtree.delete(record)
+          count_v = 0
+          for i in vendor_data:
+            cusventtree.insert(parent='',index='end',iid=i,text='',values=(i[0],i[4],i[10],i[8]))
+          count_v += 1
+
+      recur_cust_fil_cat_list = Listbox(cuselection,height=34,width=40,bg="white",activestyle="dotbox",fg="black",highlightbackground="white")
+      recur_cust_fil_cat_list.insert(0,"               View all records")
+      recur_cust_fil_cat_list.insert(1,"               View only Client/Vendor")
+      recur_cust_fil_cat_list.insert(2,"               View only Client type")
+      recur_cust_fil_cat_list.insert(3,"               View only Vendor type")
+      recur_cust_fil_cat_list.insert(4,"               Default")
+      recur_cust_fil_cat_list.place(x=660,y=63)
+      recur_cust_fil_cat_list.bind('<<ListboxSelect>>',recur_list_filter_customer)
+
 
       scrollbar = Scrollbar(cuselection)
       scrollbar.place(x=640, y=45, height=560)
@@ -853,7 +900,7 @@ def view_invoice_recurring():
       btn1=Button(cuselection,compound = LEFT,image=tick ,text="ok", width=60,command=fetch_details).place(x=15, y=610)
       btn1=Button(cuselection,compound = LEFT,image=tick,text="Edit selected customer", width=150,command=create_newcustomer_recurring).place(x=250, y=610)
       btn1=Button(cuselection,compound = LEFT,image=tick, text="Add new customer", width=150,command=create_newcustomer_recurring).place(x=435, y=610)
-      btn1=Button(cuselection,compound = LEFT,image=cancel ,text="Cancel", width=60).place(x=740, y=610)   
+      btn1=Button(cuselection,compound = LEFT,image=cancel ,text="Cancel", width=60).place(x=740, y=615)   
 
 
 
@@ -955,7 +1002,7 @@ def view_invoice_recurring():
         text=Label(recur_inv_newline_sel, text="Filtered column").place(x=340, y=10)
         e2=Entry(recur_inv_newline_sel, width=20).place(x=450, y=10)
         btn1=Button(recur_inv_newline_sel,compound = LEFT,image=tick ,text="ok",command=recur_product_tree_fetch, width=60).place(x=15, y=610)
-        btn2=Button(recur_inv_newline_sel,compound = LEFT,image=tick , text="Edit product/Service", width=150).place(x=250, y=610)
+        
 
         def new_product():  
           top = Toplevel()  
@@ -1141,7 +1188,7 @@ def view_invoice_recurring():
           removeButton = Button(imageFrame,compound = LEFT,image=cancel, text ="Remove Product Image",width=150)
           removeButton.place(x=400,y=450)
         btn3=Button(recur_inv_newline_sel,compound = LEFT,image=tick , text="Add product/Service",command=new_product, width=150).place(x=435, y=610)
-        
+        btn2=Button(recur_inv_newline_sel,compound = LEFT,image=tick , text="Edit product/Service",command=new_product, width=150).place(x=250, y=610)
         def cancel_pro_dis_page():
           recur_inv_newline_sel.destroy()
 
@@ -1153,6 +1200,44 @@ def view_invoice_recurring():
         ctegorytree.heading("#0",text="", anchor=W)
         ctegorytree.heading("1",text="View filter by category", anchor=CENTER)
         ctegorytree.place(x=660, y=45)
+            #filter customer
+        def recur_list_filter_product(evet):
+          selected_indices = ctegorytree_list.curselection()
+          selected_filter = ",".join([ctegorytree_list.get(i) for i in selected_indices])
+
+          if selected_filter == "               View all Products/Services" or selected_filter == "               Default":
+            pro_ser_sql = "SELECT * FROM Productservice"
+            fbcursor.execute(pro_ser_sql)
+            pro_ser_data = fbcursor.fetchall()
+            for record in recur_product_sel_tree.get_children():
+              recur_product_sel_tree.delete(record)
+            count_ps = 0
+            for i in pro_ser_data:
+              recur_product_sel_tree.insert(parent='',index='end',iid=i,text='',values=(i[2],i[4],i[7],i[12],i[13]))
+            count_ps += 1
+          elif selected_filter == "               View all Products":
+            pro_sql = "SELECT * FROM Productservice WHERE serviceornot=%s"
+            pro_val = ('0',)
+            fbcursor.execute(pro_sql,pro_val)
+            pro_data = fbcursor.fetchall()
+            for record in recur_product_sel_tree.get_children():
+              recur_product_sel_tree.delete(record)
+            count_p = 0
+            for i in pro_data:
+              recur_product_sel_tree.insert(parent='', index='end', iid=i, text='', values=(i[2],i[4],i[7],i[12],i[13]))
+            count_p += 1
+          elif selected_filter == "               View all Services":
+            ser_sql = "SELECT * FROM Productservice WHERE serviceornot=%s"
+            ser_val = ('1',)
+            fbcursor.execute(ser_sql,ser_val)
+            ser_data = fbcursor.fetchall()
+            for record in recur_product_sel_tree.get_children():
+              recur_product_sel_tree.delete(record)
+            count_s = 0
+            for i in ser_data:
+              recur_product_sel_tree.insert(parent='', index='end', iid=i, text='', values=(i[2],i[4],i[7],i[12],i[13]))
+            count_s += 1
+
 
         ctegorytree_list = Listbox(recur_inv_newline_sel,height=34,width=40,bg="white",activestyle="dotbox",fg="black",highlightbackground="white")
         ctegorytree_list.insert(0,"               View all Products/Services")
@@ -1160,7 +1245,8 @@ def view_invoice_recurring():
         ctegorytree_list.insert(2,"               View all Services")
         ctegorytree_list.insert(3,"               Default")
         ctegorytree_list.place(x=660,y=63)
-        ctegorytree_list.bind('<<ListboxSelect>>')
+        ctegorytree_list.bind('<<ListboxSelect>>',recur_list_filter_product)
+        
 
       
     
