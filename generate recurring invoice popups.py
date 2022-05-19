@@ -582,14 +582,27 @@ def view_invoice_recurring():
     # print(itemid)
     # for child in MyApp1object.main_rec_tree.get_children():
     #   print(MyApp1object.main_rec_tree.item(child)["values"])
-  
-
+    global ee1,ee2,ee3,ee4,ee5,ee6
+    global rec_edit_inv_data
     pop=Toplevel(recurring_midFrame)
     pop.title("Invoice")
     pop.geometry("950x690+150+0")
- 
+    
+    edit_inv_fetch = main_rec_tree.item(main_rec_tree.focus())["values"][1]
+    print(edit_inv_fetch)
+    sql_edit = "SELECT * FROM Invoice WHERE invoiceid=%s"
+    val_edit = (edit_inv_fetch,)
+    fbcursor.execute(sql_edit,val_edit)
+    rec_edit_inv_data = fbcursor.fetchone()
+    
+    print(rec_edit_inv_data)
+    
 
+    
+      
+  
 
+         
 
 
   
@@ -1480,7 +1493,7 @@ def view_invoice_recurring():
     fir1Frame.pack(side="top", fill=X)
     labelframe1 = LabelFrame(fir1Frame,text="Customers",font=("arial",15))
     labelframe1.place(x=10,y=5,width=640,height=160)
-    def inv_to_combo(event):
+    def recur_inv_to_combo(event):
       inv_to_str = inv_to.get()
       sql = "SELECT * FROM Customer WHERE businessname=%s"
       val = (inv_to_str,)
@@ -1502,7 +1515,7 @@ def view_invoice_recurring():
     fbcursor.execute(sql,)
     global pdata
     pdata = fbcursor.fetchall()
-    global ee1,ee2,ee3,ee4,ee5,ee6
+    # global ee1,ee2,ee3,ee4,ee5,ee6
    
     invoice_to = Label(labelframe1, text="Order to").place(x=10,y=5)
     inv_to = StringVar()
@@ -1510,7 +1523,7 @@ def view_invoice_recurring():
     ee1.place(x=80,y=5)
     ee1.place(x=80,y=5)
     ee1['values'] = pdata
-    ee1.bind("<<ComboboxSelected>>", inv_to_combo)
+    ee1.bind("<<ComboboxSelected>>", recur_inv_to_combo)
     
     address=Label(labelframe1,text="Address").place(x=10,y=30)
     ee2=scrolledtext.Text(labelframe1, undo=True,width=23)
@@ -1546,6 +1559,18 @@ def view_invoice_recurring():
     e4=ttk.Combobox(labelframe, value="",width=25).place(x=100,y=92)
     ref=Label(labelframe,text="Order ref#").place(x=5,y=118)
     e1=Entry(labelframe,width=27).place(x=100,y=118)
+    ee1.delete(0, END)
+    ee1.insert(0,rec_edit_inv_data[18])
+    ee2.delete('1.0',END)
+    ee2.insert('1.0',rec_edit_inv_data[19])
+    ee3.delete('1.0', END)
+    ee3.insert(0, rec_edit_inv_data[20])
+    ee4.delete('1.0',END)
+    ee4.insert('1.0',rec_edit_inv_data[22])
+    ee5.delete(0,END)
+    ee5.insert(0,rec_edit_inv_data[21])
+    ee6.delete(0,END)
+    ee6.insert(0,rec_edit_inv_data[7])
 
     fir2Frame=Frame(pop, height=150,width=100,bg="#f5f3f2")
     fir2Frame.pack(side="top", fill=X)
@@ -1816,7 +1841,7 @@ class MyApp1:
       expand=YES,
       )
 
-    
+    global main_rec_tree
     main_rec_tree = ttk.Treeview(self.left_frame, columns = (1,2,3,4,5,6,7), height = 15, show = "headings")
     main_rec_tree.pack(side = 'top')
     main_rec_tree.heading(1)
