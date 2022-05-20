@@ -1549,28 +1549,56 @@ def view_invoice_recurring():
     labelframe = LabelFrame(fir1Frame,text="Invoice",font=("arial",15))
     labelframe.place(x=652,y=5,width=290,height=170)
     order=Label(labelframe,text="Invoice#").place(x=5,y=5)
-    e1=Entry(labelframe,width=25).place(x=100,y=5,)
+    invoice_number_entry=Entry(labelframe,width=25)
+    invoice_number_entry.place(x=100,y=5,)
     orderdate=Label(labelframe,text="Invoice date").place(x=5,y=33)
-    e2=Entry(labelframe,width=20).place(x=150,y=33)
+    invoice_date_entry=Entry(labelframe,width=20)
+    invoice_date_entry.place(x=150,y=33)
     checkvarStatus5=IntVar()
     duedate=Checkbutton(labelframe,variable = checkvarStatus5,text="Due date",onvalue =0 ,offvalue = 1).place(x=5,y=62)
-    e3=Entry(labelframe,width=20).place(x=150,y=62)
+    due_date_entry=Entry(labelframe,width=20)
+    due_date_entry.place(x=150,y=62)
     terms=Label(labelframe,text="Terms").place(x=5,y=92)
-    e4=ttk.Combobox(labelframe, value="",width=25).place(x=100,y=92)
+    terms_entry=ttk.Combobox(labelframe, value="",width=25)
+    terms_entry.place(x=100,y=92)
     ref=Label(labelframe,text="Order ref#").place(x=5,y=118)
-    e1=Entry(labelframe,width=27).place(x=100,y=118)
-    ee1.delete(0, END)
-    ee1.insert(0,rec_edit_inv_data[18])
-    ee2.delete('1.0',END)
-    ee2.insert('1.0',rec_edit_inv_data[19])
-    ee3.delete('1.0', END)
-    ee3.insert(0, rec_edit_inv_data[20])
-    ee4.delete('1.0',END)
-    ee4.insert('1.0',rec_edit_inv_data[22])
-    ee5.delete(0,END)
-    ee5.insert(0,rec_edit_inv_data[21])
-    ee6.delete(0,END)
-    ee6.insert(0,rec_edit_inv_data[7])
+    orderref_entry=Entry(labelframe,width=27)
+    orderref_entry.place(x=100,y=118)
+    invoice_number_entry.delete(0, END)
+    invoice_number_entry.insert(0,rec_edit_inv_data[1])
+    invoice_date_entry.delete(0, END)
+    invoice_date_entry.insert(0,rec_edit_inv_data[2])
+    due_date_entry.delete(0, END)
+    due_date_entry.insert(0,rec_edit_inv_data[3])
+    orderref_entry.delete(0, END)
+    orderref_entry.insert(0,rec_edit_inv_data[5])
+    
+    term_sql = "SELECT terms_of_payment FROM terms_of_payment"
+    fbcursor.execute(term_sql,)
+    term_data = fbcursor.fetchall()
+    tdata = []
+    for i in term_data:
+      tdata.append(i[0])
+    
+    
+    # inv_terms_label=Label(labelframe,text="Terms").place(x=5,y=92)
+    # inv_terms_combo=ttk.Combobox(labelframe, value="",width=23)
+    # inv_terms_combo.place(x=100,y=92)
+    terms_entry['values'] = tdata
+    terms_entry.bind("<<ComboboxSelected>>")
+    ee1.delete(0, END)#buisiness name
+    ee1.insert(0,rec_edit_inv_data[20])
+    ee2.delete('1.0',END)#address
+    ee2.insert('1.0',rec_edit_inv_data[21])
+    ee3.delete(0, END)#ship to customer name
+    ee3.insert(0, rec_edit_inv_data[22])
+    ee4.delete('1.0',END)#ship address
+    ee4.insert('1.0',rec_edit_inv_data[23])
+    ee5.delete(0,END)#email
+    ee5.insert(0,rec_edit_inv_data[24])
+    ee6.delete(0,END)#smsnumber
+    ee6.insert(0,rec_edit_inv_data[25])
+
 
     fir2Frame=Frame(pop, height=150,width=100,bg="#f5f3f2")
     fir2Frame.pack(side="top", fill=X)
@@ -1628,9 +1656,9 @@ def view_invoice_recurring():
     myNotebook.add(documentFrame,compound="left",  text="Documents")
     myNotebook.pack(expand = 1, fill ="both")  
 
-    sql = "select extracostname from invoice"
-    fbcursor.execute(sql,)
-    exdata = fbcursor.fetchall()  
+    # sql = "select extracostname from invoice"
+    # fbcursor.execute(sql,)
+    # exdata = fbcursor.fetchall()  
   ##
   #   itemid = main_rec_tree.items(main_rec_tree.focus())["values"][1]
   #   sql = "select * from invoice where invoiceid = %s"
@@ -1642,26 +1670,56 @@ def view_invoice_recurring():
     labelframe1 = LabelFrame(invoiceFrame,text="",font=("arial",15))
     labelframe1.place(x=1,y=1,width=800,height=170)
 
+    
+    sql_exn = "SELECT extra_cost_name FROM extra_cost_name"
+    fbcursor.execute(sql_exn)
+    ex_data = fbcursor.fetchall()
+    print(ex_data)
+
     cost1=Label(labelframe1,text="Extra cost name").place(x=2,y=5)
-    extra4=ttk.Combobox(labelframe1, value=exdata,width=20)
-    extra4.place(x=115,y=5)
+    extracost_entry=ttk.Combobox(labelframe1, value="",width=20)
+    extracost_entry.place(x=115,y=5)
+    extracost_entry['values'] = ex_data
+    extracost_entry.bind("<<ComboboxSelected>>")
   #   extra4['values']= ["Shipping and handling", "Postage and handling", "Delivery cost"] 
   #   extra4.delete(0,'end')
   #   extra4.insert(0, orbtdata[11])
 
     e1=ttk.Combobox(labelframe1, value="",width=20).place(x=115,y=5)
     rate=Label(labelframe1,text="Discount rate").place(x=370,y=5)
-    e2=Entry(labelframe1,width=6).place(x=460,y=5)
+
+    discount_rate_entry=Entry(labelframe1,width=6)
+    discount_rate_entry.place(x=460,y=5)
+    discount_rate_entry.delete(0, END)
+    discount_rate_entry.insert(0, rec_edit_inv_data[17])
+
     cost2=Label(labelframe1,text="Extra cost").place(x=35,y=35)
-    e3=Entry(labelframe1,width=10).place(x=115,y=35)
+    extraname_entry=Entry(labelframe1,width=10)
+    extraname_entry.place(x=115,y=35)
+    extraname_entry.delete(0, END)
+    extraname_entry.insert(0, rec_edit_inv_data[14])
     tax=Label(labelframe1,text="Tax1").place(x=420,y=35)
-    e4=Entry(labelframe1,width=7).place(x=460,y=35)
+    tax_entry=Entry(labelframe1,width=7)
+    tax_entry.place(x=460,y=35)
+    tax_entry.delete(0, END)
+    tax_entry.insert(0, rec_edit_inv_data[18])
     template=Label(labelframe1,text="Template").place(x=37,y=70)
-    e5=ttk.Combobox(labelframe1, value="",width=25).place(x=115,y=70)
+
+    template_entry=ttk.Combobox(labelframe1, value="",width=25)
+    template_entry.place(x=115,y=70)
+    template_entry.delete(0, END)
+    template_entry.insert(0, rec_edit_inv_data[15])
+
     sales=Label(labelframe1,text="Sales Person").place(x=25,y=100)
-    e6=Entry(labelframe1,width=18).place(x=115,y=100)
+    sales_entry=Entry(labelframe1,width=18)
+    sales_entry.place(x=115,y=100)
+    sales_entry.delete(0, END)
+    sales_entry.insert(0, rec_edit_inv_data[16])
     category=Label(labelframe1,text="Category").place(x=300,y=100)
-    e7=Entry(labelframe1,width=22).place(x=370,y=100)
+    category_entry=Entry(labelframe1,width=22)
+    category_entry.place(x=370,y=100)
+    category_entry.delete(0, END)
+    category_entry.insert(0, rec_edit_inv_data[19])
     
     statusfrme = LabelFrame(labelframe1,text="Status",font=("arial",15))
     statusfrme.place(x=540,y=0,width=160,height=160)
