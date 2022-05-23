@@ -115,13 +115,22 @@ plus_1 = PhotoImage(file="images/plus_1.png")
 minus = PhotoImage(file="images/minus.png")
 #generate recurring invoice popups
 def generate_recurring_noinvoice(): 
-  #  if result=='ok': 
-   messagebox.showinfo("F-Billing Revolution 2022", "No recurring invoices are ready today")
-
-def generate_recurring_invoice_success():  
-   messagebox.showinfo("F-Billing Revolution 2022", "1 new invoice successfully created.")
   
-     
+  messagebox.showinfo("F-Billing Revolution 2022", "No recurring invoices are ready today")
+
+def generate_recurring_invoice_success(): 
+  sql = "select * from invoice where (recurring_period_month =%s OR recurring_period_month =%s)AND status!=%s"
+  val = ('month(s)', 'day(s)', 'void')
+  fbcursor.execute(sql,val)
+  pdata = fbcursor.fetchall()
+  # rectotalinput=0
+  j = 0
+  for i in pdata:
+      main_rec_tree.insert(parent='', index='end', iid=i, text='', values=('',i[0], i[28], i[27], i[29], i[20], i[10]))
+      j += 1
+  #  if result=='ok':  
+  messagebox.showinfo("F-Billing Revolution 2022", "invoices successfully created.")
+ 
 
 
 
@@ -1015,8 +1024,7 @@ def view_invoice_recurring():
             count += 1
         pro_filter_button=Button(recur_inv_newline_sel, text='ok',command=filter_product)
         pro_filter_button.place(x=240, y=9,height=20,width=60)
-        text=Label(recur_inv_newline_sel, text="Filtered column").place(x=340, y=10)
-        e2=Entry(recur_inv_newline_sel, width=20).place(x=450, y=10)
+        
         btn1=Button(recur_inv_newline_sel,compound = LEFT,image=tick ,text="ok",command=recur_product_tree_fetch, width=60).place(x=15, y=610)
         
 
@@ -1662,22 +1670,7 @@ def view_invoice_recurring():
     myNotebook.pack(expand = 1, fill ="both")  
 
 
-    def recur_check_1():
-      if checkrecStatus_1.get() == 0:
-        recur_period_entry_1['state'] = DISABLED
-        recur_month_combo_1['state'] = DISABLED
-        recur_nxt_inv_date_1['state'] = DISABLED
-        recur_stop_check_1['state'] = DISABLED
-        recur_stop_date_1['state'] = DISABLED
-        recur_recalc_1['state'] = DISABLED
-      else:
-        recur_period_entry_1['state'] = NORMAL
-        recur_month_combo_1['state'] = NORMAL
-        recur_nxt_inv_date_1['state'] = NORMAL
-        recur_stop_check_1['state'] = NORMAL
-        recur_stop_date_1['state'] = NORMAL
-        recur_recalc_1['state'] = NORMAL 
-
+    
     recur_labelframe_1 = LabelFrame(recurFrame,text="",font=("arial",15))
     recur_labelframe_1.place(x=1,y=1,width=735,height=170)
 
@@ -1686,27 +1679,44 @@ def view_invoice_recurring():
     #     recur_stop_date_1['state'] = NORMAL
     #   else:
     #     recur_stop_date_1['state'] = DISABLED
+    def recur_check():
+      # if checkrecStatus_1.get() == 0:
+      #   recur_period_entry_1['state'] = DISABLED
+      #   recur_month_combo_1['state'] = DISABLED
+      #   recur_nxt_inv_date_1['state'] = DISABLED
+      #   recur_stop_check_1['state'] = DISABLED
+      #   recur_stop_date_1['state'] = DISABLED
+      #   recur_recalc_1['state'] = DISABLED
+      # else:
+        # checkrecStatus_1.set(1)
+        recur_period_entry_1['state'] = NORMAL
+        recur_month_combo_1['state'] = NORMAL
+        recur_nxt_inv_date_1['state'] = NORMAL
+        recur_stop_check_1['state'] = NORMAL
+        recur_stop_date_1['state'] = NORMAL
+        recur_recalc_1['state'] = NORMAL 
 
     mdata_1 = ["Month(s)","Day(s)"]
-
+    
     checkrecStatus_1=IntVar()
-    recur_check_btn_1 = Checkbutton(recur_labelframe_1,variable=checkrecStatus_1,text="Recurring",onvalue= 1,offvalue=0,command=recur_check_1)
+    checkrecStatus_1.set(1)
+    recur_check_btn_1 = Checkbutton(recur_labelframe_1,command=recur_check,variable=checkrecStatus_1,text="Recurring",onvalue= 1,offvalue=0)
     recur_check_btn_1.place(x=25,y=20)
     recur_period_label_1 = Label(recur_labelframe_1,text="Recurring period (interval)").place(x=130,y=45)
-    recur_period_entry_1 = Spinbox(recur_labelframe_1,width=10,state=DISABLED,from_=1,to=10)
+    recur_period_entry_1 = Spinbox(recur_labelframe_1,width=10,from_=1,to=10)
     recur_period_entry_1.place(x=280,y=45)
-    recur_month_combo_1 = ttk.Combobox(recur_labelframe_1,values="",width=15,state=DISABLED)
+    recur_month_combo_1 = ttk.Combobox(recur_labelframe_1,values="",width=15)
     recur_month_combo_1.place(x=360,y=45)
     recur_month_combo_1['values'] = mdata_1
     recur_nxt_inv_label_1 = Label(recur_labelframe_1,text="Next Invoice").place(x=280,y=70)
-    recur_nxt_inv_date_1 = DateEntry(recur_labelframe_1,width=20,state=DISABLED)
+    recur_nxt_inv_date_1 = DateEntry(recur_labelframe_1,width=20)
     recur_nxt_inv_date_1.place(x=360,y=70)
     checkstopStatus_1 = IntVar()
-    recur_stop_check_1 = Checkbutton(recur_labelframe_1,variable=checkstopStatus_1,text="Stop recurring after",onvalue=1,offvalue=0,state=DISABLED)
+    recur_stop_check_1 = Checkbutton(recur_labelframe_1,variable=checkstopStatus_1,text="Stop recurring after",onvalue=1,offvalue=0)
     recur_stop_check_1.place(x=225,y=95)
-    recur_stop_date_1 = DateEntry(recur_labelframe_1,width=20,state=DISABLED)
+    recur_stop_date_1 = DateEntry(recur_labelframe_1,width=20)
     recur_stop_date_1.place(x=360,y=95)
-    recur_recalc_1 = Button(recur_labelframe_1,compound=LEFT,image=recalc,text="Recalculate",width=80,height=12,state=DISABLED)
+    recur_recalc_1 = Button(recur_labelframe_1,compound=LEFT,image=recalc,text="Recalculate",width=80,height=12)
     recur_recalc_1.place(x=540,y=70)
 
     #here it goes
@@ -1792,7 +1802,7 @@ def view_invoice_recurring():
     pay_msg_1 = Button(payementFrame,image=photo6,text="",width=20,height=25)
     pay_msg_1.place(x=10,y=125)
 
-    print("data20" + rec_edit_inv_data[20] +"data20" )
+    print("data20   " + rec_edit_inv_data[20] +"   data20" )
     pay_sql = "SELECT * FROM markinvoice WHERE paid_by=%s"
     pay_val = (rec_edit_inv_data[20],)
     fbcursor.execute(pay_sql,pay_val)
@@ -1812,20 +1822,26 @@ def view_invoice_recurring():
   #   orbtdata = fbcursor.fetchone()
   # ##
 
-    labelframe1 = LabelFrame(invoiceFrame,text="",font=("arial",15))
-    labelframe1.place(x=1,y=1,width=800,height=170)
 
-    
+
     sql_exn = "SELECT extra_cost_name FROM extra_cost_name"
     fbcursor.execute(sql_exn)
     ex_data = fbcursor.fetchall()
     print(ex_data)
-    hai=StringVar()
+    
+    labelframe1 = LabelFrame(invoiceFrame,text="",font=("arial",15))
+    labelframe1.place(x=1,y=1,width=800,height=170)
+
+    
+ 
     cost1=Label(labelframe1,text="Extra cost name").place(x=2,y=5)
-    extracost_entry=ttk.Combobox(labelframe1,textvariable=hai,width=20)
+    extracost_entry=ttk.Combobox(labelframe1, value="",width=20)
     extracost_entry.place(x=115,y=5)
     extracost_entry['values'] = ex_data
     extracost_entry.bind("<<ComboboxSelected>>")
+    extracost_entry.delete(0, END)
+    print(rec_edit_inv_data[13])
+    extracost_entry.insert(0, rec_edit_inv_data[13])
   #   extra4['values']= ["Shipping and handling", "Postage and handling", "Delivery cost"] 
   #   extra4.delete(0,'end')
   #   extra4.insert(0, orbtdata[11])
@@ -2065,15 +2081,17 @@ class MyApp1:
     scrollbar = Scrollbar(self.left_frame)
     scrollbar.place(x=1008+300+25, y=0, height=300+20)
     scrollbar.config( command=main_rec_tree.yview )
-    sql = "select * from invoice where (recurring_period_month =%s OR recurring_period_month =%s)AND status!=%s"
-    val = ('month(s)', 'day(s)', 'void')
-    fbcursor.execute(sql,val)
-    pdata = fbcursor.fetchall()
-    rectotalinput=0
-    j = 0
-    for i in pdata:
-        main_rec_tree.insert(parent='', index='end', iid=i, text='', values=('',i[0], i[28], i[27], i[29], i[20], i[10]))
-        j += 1
+
+    # def genrec():
+    #   sql = "select * from invoice where (recurring_period_month =%s OR recurring_period_month =%s)AND status!=%s"
+    #   val = ('month(s)', 'day(s)', 'void')
+    #   fbcursor.execute(sql,val)
+    #   pdata = fbcursor.fetchall()
+    #   # rectotalinput=0
+    #   j = 0
+    #   for i in pdata:
+    #       main_rec_tree.insert(parent='', index='end', iid=i, text='', values=('',i[0], i[28], i[27], i[29], i[20], i[10]))
+    #       j += 1
     #     for line in main_rec_tree.get_children():
     #     recidsave1=main_rec_tree.item(line)['values'][6]
     #     rectotalinput += recidsave1
