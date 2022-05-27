@@ -1820,7 +1820,19 @@ def view_invoice_recurring():
     pay_tree_1.heading("5",text="Amount")
     pay_tree_1.place(x=45,y=20)
 
-    def markinvo_1():
+    def add_plus_invo():
+      get_pay_sql = "SELECT * FROM payments WHERE invoice_number=%s"
+      get_pay_val = (rec_edit_inv_data[1],)
+      fbcursor.execute(get_pay_sql,get_pay_val)
+      get_pay_data = fbcursor.fetchall()
+
+      # len_pay = []
+      # for gpay in get_pay_data:
+      #   if gpay[2] == '':
+      #     pass
+      #   else:
+      #     len_pay.append(gpay[2])
+      
       check_newline = sub_rec_tree.get_children()
       if ee1.get() == '':
         messagebox.showwarning("F-Billing Revolution","Customer required, please select customer first.")
@@ -1984,6 +1996,58 @@ def view_invoice_recurring():
           subject_entry.delete(0,END)
           subject_entry.insert(0,"Payment reciept for Invoice" + " " + "(" + subject + ")")
 
+                  
+
+
+  #email
+        
+  def emailorder():
+    mailDetail=Toplevel()
+    mailDetail.title("E-Mail Invoice List")
+    p2 = PhotoImage(file = "images/fbicon.png")
+    mailDetail.iconphoto(False, p2)
+    mailDetail.geometry("1030x550+150+120")
+  
+    def my_SMTP():
+        if True:
+            em_ser_conbtn.destroy()
+            mysmtpservercon=LabelFrame(account_Frame,text="SMTP server connection(ask your ISP for your SMTP settings)", height=165, width=380)
+            mysmtpservercon.place(x=610, y=110)
+            lbl_hostn=Label(mysmtpservercon, text="Hostname").place(x=5, y=10)
+            hostnent=Entry(mysmtpservercon, width=30).place(x=80, y=10)
+            lbl_portn=Label(mysmtpservercon, text="Port").place(x=5, y=35)
+            portent=Entry(mysmtpservercon, width=30).place(x=80, y=35)
+            lbl_usn=Label(mysmtpservercon, text="Username").place(x=5, y=60)
+            unament=Entry(mysmtpservercon, width=30).place(x=80, y=60)
+            lbl_pasn=Label(mysmtpservercon, text="Password").place(x=5, y=85)
+            pwdent=Entry(mysmtpservercon, width=30).place(x=80, y=85)
+            ssl_chkvar=IntVar()
+            ssl_chkbtn=Checkbutton(mysmtpservercon, variable=ssl_chkvar, text="This server requires a secure connection(SSL)", onvalue=1, offvalue=0)
+            ssl_chkbtn.place(x=50, y=110)
+            em_ser_conbtn1=Button(account_Frame, text="Test E-mail Server Connection").place(x=610, y=285)
+        else:
+            pass
+      
+    style = ttk.Style()
+    style.theme_use('default')
+    style.configure('TNotebook.Tab', background="#999999", padding=5)
+    email_Notebook = ttk.Notebook(mailDetail)
+    email_Frame = Frame(email_Notebook, height=500, width=1080)
+    account_Frame = Frame(email_Notebook, height=550, width=1080)
+    email_Notebook.add(email_Frame, text="E-mail")
+    email_Notebook.add(account_Frame, text="Account")
+    email_Notebook.place(x=0, y=0)
+    messagelbframe=LabelFrame(email_Frame,text="Message", height=495, width=730)
+    messagelbframe.place(x=5, y=5)
+    lbl_emailtoaddr=Label(messagelbframe, text="Email to address").place(x=5, y=5)
+    emailtoent=Entry(messagelbframe, width=50).place(x=120, y=5)
+    sendemail_btn=Button(messagelbframe, text="Send Email", width=10, height=1).place(x=600, y=10)
+    lbl_carcopyto=Label(messagelbframe, text="Carbon copy to").place(x=5, y=32)
+    carcopyent=Entry(messagelbframe, width=50).place(x=120, y=32)
+    stopemail_btn=Button(messagelbframe, text="Stop sending", width=10, height=1).place(x=600, y=40)
+    lbl_subject=Label(messagelbframe, text="Subject").place(x=5, y=59)
+    subent=Entry(messagelbframe, width=50).place(x=120, y=59)
+
           style = ttk.Style()
           style.theme_use('default')
           style.configure('TNotebook.Tab', background="#999999", width=20, padding=5)
@@ -2111,7 +2175,7 @@ def view_invoice_recurring():
       inv_pok_btn_1 =Button(Mark_Invoice,compound = LEFT,image=tick , text="Save payment", command=add_newline_pay, width=100).place(x=10, y=350)
       inv_pcan_btn_1 =Button(Mark_Invoice,compound = LEFT,image=cancel, text="Cancel", width=100).place(x=500, y=350)
 
-    pay_plus_1 = Button(payementFrame,image=plus_1,text="",width=20,height=25,command=markinvo_1)
+    pay_plus_1 = Button(payementFrame,image=plus_1,text="",width=20,height=25,command=add_plus_invo)
     pay_plus_1.place(x=10,y=20)
     pay_minus_1 = Button(payementFrame,image=minus,text="",width=20,height=25)
     pay_minus_1.place(x=10,y=55)
@@ -2209,21 +2273,34 @@ def view_invoice_recurring():
     on2=Label(statusfrme, text="Printed on:").place( y=90)
     nev2=Label(statusfrme, text="Never").place(x=100,y=90)
         #here it goes
-    
+    head_sql = "SELECT headerandfooter FROM header_and_footer"
+    fbcursor.execute(head_sql,)
+    header_data = fbcursor.fetchall()
+    head_data = []
+    for i in header_data:
+      head_data.append(i[0])
 
     text1=Label(headerFrame,text="Title text").place(x=50,y=5)
-    e1=ttk.Combobox(headerFrame, value="",width=60).place(x=125,y=5)
+    title_combo=ttk.Combobox(headerFrame, value="",width=60)
+    title_combo.place(x=125,y=5)
+    title_combo['values'] = head_data
+    title_combo.bind("<<ComboboxSelected>>")
     text2=Label(headerFrame,text="Page header text").place(x=2,y=45)
-    e1=ttk.Combobox(headerFrame, value="",width=60).place(x=125,y=45)
+    header_combo=ttk.Combobox(headerFrame, value=head_data,width=60)
+    header_combo.place(x=125,y=45)
+    header_combo.bind("<<ComboboxSelected>>")
     text3=Label(headerFrame,text="Footer text").place(x=35,y=85)
-    e1=ttk.Combobox(headerFrame, value="",width=60).place(x=125,y=85)
+    footer_combo=ttk.Combobox(headerFrame, value=head_data,width=60)
+    footer_combo.place(x=125,y=85)
+    footer_combo.bind("<<ComboboxSelected>>")
 
     text=Label(noteFrame,text="Private notes(not shown on invoice/order/estemates)").place(x=10,y=10)
     e1=Text(noteFrame,width=100,height=7).place(x=10,y=32)
 
     e1=Text(termsFrame,width=100,height=9).place(x=10,y=10)
 
-    e1=Text(commentFrame,width=100,height=9).place(x=10,y=10)
+    comment_label=LabelFrame(commentFrame,width=100,height=9,text="",font=("arial",15))
+    comment_label.place(x=10,y=10)
 
     btn1=Button(documentFrame,height=2,width=3,text="+").place(x=5,y=10)
     btn2=Button(documentFrame,height=2,width=3,text="-").place(x=5,y=50)
