@@ -1549,7 +1549,53 @@ def view_invoice_recurring():
 
     w = Canvas(firFrame, width=1, height=65, bg="#b3b3b3", bd=0)
     w.pack(side="left", padx=5)
-
+            
+    def emailorder():
+      mailDetail=Toplevel()
+      mailDetail.title("E-Mail Invoice List")
+      p2 = PhotoImage(file = "images/fbicon.png")
+      mailDetail.iconphoto(False, p2)
+      mailDetail.geometry("1030x550+150+120")
+    
+      def my_SMTP():
+          if True:
+              em_ser_conbtn.destroy()
+              mysmtpservercon=LabelFrame(account_Frame,text="SMTP server connection(ask your ISP for your SMTP settings)", height=165, width=380)
+              mysmtpservercon.place(x=610, y=110)
+              lbl_hostn=Label(mysmtpservercon, text="Hostname").place(x=5, y=10)
+              hostnent=Entry(mysmtpservercon, width=30).place(x=80, y=10)
+              lbl_portn=Label(mysmtpservercon, text="Port").place(x=5, y=35)
+              portent=Entry(mysmtpservercon, width=30).place(x=80, y=35)
+              lbl_usn=Label(mysmtpservercon, text="Username").place(x=5, y=60)
+              unament=Entry(mysmtpservercon, width=30).place(x=80, y=60)
+              lbl_pasn=Label(mysmtpservercon, text="Password").place(x=5, y=85)
+              pwdent=Entry(mysmtpservercon, width=30).place(x=80, y=85)
+              ssl_chkvar=IntVar()
+              ssl_chkbtn=Checkbutton(mysmtpservercon, variable=ssl_chkvar, text="This server requires a secure connection(SSL)", onvalue=1, offvalue=0)
+              ssl_chkbtn.place(x=50, y=110)
+              em_ser_conbtn1=Button(account_Frame, text="Test E-mail Server Connection").place(x=610, y=285)
+          else:
+              pass
+        
+      style = ttk.Style()
+      style.theme_use('default')
+      style.configure('TNotebook.Tab', background="#999999", padding=5)
+      email_Notebook = ttk.Notebook(mailDetail)
+      email_Frame = Frame(email_Notebook, height=500, width=1080)
+      account_Frame = Frame(email_Notebook, height=550, width=1080)
+      email_Notebook.add(email_Frame, text="E-mail")
+      email_Notebook.add(account_Frame, text="Account")
+      email_Notebook.place(x=0, y=0)
+      messagelbframe=LabelFrame(email_Frame,text="Message", height=495, width=730)
+      messagelbframe.place(x=5, y=5)
+      lbl_emailtoaddr=Label(messagelbframe, text="Email to address").place(x=5, y=5)
+      emailtoent=Entry(messagelbframe, width=50).place(x=120, y=5)
+      sendemail_btn=Button(messagelbframe, text="Send Email", width=10, height=1).place(x=600, y=10)
+      lbl_carcopyto=Label(messagelbframe, text="Carbon copy to").place(x=5, y=32)
+      carcopyent=Entry(messagelbframe, width=50).place(x=120, y=32)
+      stopemail_btn=Button(messagelbframe, text="Stop sending", width=10, height=1).place(x=600, y=40)
+      lbl_subject=Label(messagelbframe, text="Subject").place(x=5, y=59)
+      subent=Entry(messagelbframe, width=50).place(x=120, y=59)
     mail= Button(firFrame,compound="top", text="Email\nInvoice",relief=RAISED, image=photo6,bg="#f5f3f2", fg="black", height=55, bd=1, width=55,command=email_invoice_recurring)
     mail.pack(side="left", pady=3, ipadx=4)
 
@@ -2000,53 +2046,7 @@ def view_invoice_recurring():
 
 
   #email
-        
-  def emailorder():
-    mailDetail=Toplevel()
-    mailDetail.title("E-Mail Invoice List")
-    p2 = PhotoImage(file = "images/fbicon.png")
-    mailDetail.iconphoto(False, p2)
-    mailDetail.geometry("1030x550+150+120")
-  
-    def my_SMTP():
-        if True:
-            em_ser_conbtn.destroy()
-            mysmtpservercon=LabelFrame(account_Frame,text="SMTP server connection(ask your ISP for your SMTP settings)", height=165, width=380)
-            mysmtpservercon.place(x=610, y=110)
-            lbl_hostn=Label(mysmtpservercon, text="Hostname").place(x=5, y=10)
-            hostnent=Entry(mysmtpservercon, width=30).place(x=80, y=10)
-            lbl_portn=Label(mysmtpservercon, text="Port").place(x=5, y=35)
-            portent=Entry(mysmtpservercon, width=30).place(x=80, y=35)
-            lbl_usn=Label(mysmtpservercon, text="Username").place(x=5, y=60)
-            unament=Entry(mysmtpservercon, width=30).place(x=80, y=60)
-            lbl_pasn=Label(mysmtpservercon, text="Password").place(x=5, y=85)
-            pwdent=Entry(mysmtpservercon, width=30).place(x=80, y=85)
-            ssl_chkvar=IntVar()
-            ssl_chkbtn=Checkbutton(mysmtpservercon, variable=ssl_chkvar, text="This server requires a secure connection(SSL)", onvalue=1, offvalue=0)
-            ssl_chkbtn.place(x=50, y=110)
-            em_ser_conbtn1=Button(account_Frame, text="Test E-mail Server Connection").place(x=610, y=285)
-        else:
-            pass
-      
-    style = ttk.Style()
-    style.theme_use('default')
-    style.configure('TNotebook.Tab', background="#999999", padding=5)
-    email_Notebook = ttk.Notebook(mailDetail)
-    email_Frame = Frame(email_Notebook, height=500, width=1080)
-    account_Frame = Frame(email_Notebook, height=550, width=1080)
-    email_Notebook.add(email_Frame, text="E-mail")
-    email_Notebook.add(account_Frame, text="Account")
-    email_Notebook.place(x=0, y=0)
-    messagelbframe=LabelFrame(email_Frame,text="Message", height=495, width=730)
-    messagelbframe.place(x=5, y=5)
-    lbl_emailtoaddr=Label(messagelbframe, text="Email to address").place(x=5, y=5)
-    emailtoent=Entry(messagelbframe, width=50).place(x=120, y=5)
-    sendemail_btn=Button(messagelbframe, text="Send Email", width=10, height=1).place(x=600, y=10)
-    lbl_carcopyto=Label(messagelbframe, text="Carbon copy to").place(x=5, y=32)
-    carcopyent=Entry(messagelbframe, width=50).place(x=120, y=32)
-    stopemail_btn=Button(messagelbframe, text="Stop sending", width=10, height=1).place(x=600, y=40)
-    lbl_subject=Label(messagelbframe, text="Subject").place(x=5, y=59)
-    subent=Entry(messagelbframe, width=50).place(x=120, y=59)
+
 
           style = ttk.Style()
           style.theme_use('default')
@@ -2298,12 +2298,63 @@ def view_invoice_recurring():
     e1=Text(noteFrame,width=100,height=7).place(x=10,y=32)
 
     e1=Text(termsFrame,width=100,height=9).place(x=10,y=10)
+    comment_txt_1=Text(commentFrame,width=100,height=9).place(x=10,y=22)
 
-    comment_label=LabelFrame(commentFrame,width=100,height=9,text="",font=("arial",15))
-    comment_label.place(x=10,y=10)
+    
+    ################### attatch file ###########################
+    def attaching_file():
+      global files,file_types
+      file_types = [('png files','*.png'),('jpg files','*.jpg'),('all files','*.*')]
+      files = filedialog.askopenfilename(initialdir="/",filetypes=file_types)
+      shutil.copyfile(files, os.getcwd()+'/images/'+files.split('/')[-1])
+      file_size_1 = converting(os.path.getsize(files))
+      cusventtree.insert(parent='',index='end',iid=files.split('/')[-1],text='',values=('',files.split('/')[-1],file_size_1))
+      
 
-    btn1=Button(documentFrame,height=2,width=3,text="+").place(x=5,y=10)
-    btn2=Button(documentFrame,height=2,width=3,text="-").place(x=5,y=50)
+    #################### size convertion of files############################
+    def converting(B):
+      BYTE = float(B)
+      KB = float(1024)
+      MB = float(KB**2)
+
+      if BYTE < KB:
+        return '{0} {1}'.format(BYTE,'Bytes' if 0 == B > 1 else 'Byte')
+      elif KB <= BYTE < MB:
+        return '{0:.2f} KB'.format(BYTE / KB)
+      elif MB <= BYTE:
+        return '{0:.2f} MB'.format(BYTE / MB)
+    ############### delete file #################
+    def deleting_file():
+      selected_doc_item_1 = cusventtree.selection()[0]
+      cusventtree.delete(selected_doc_item_1)
+
+
+    ############## show file ###############
+
+    def show_file(event):
+      selected_file_1 = cusventtree.item(cusventtree.focus())["values"][1]
+      show = Toplevel()
+      show.geometry("700x500")
+      show.title("View Files")
+      if selected_file_1.lower().endswith(('.png','.jpg')):
+        open_image_1 = Image.open("images/"+selected_file_1)
+        resize_img_1 = open_image_1.resize((700,500))
+        img_1 = ImageTk.PhotoImage(resize_img_1)
+        image_1 = Label(show,image=img_1)
+        image_1.photo = img_1
+        image_1.pack()
+      else:
+        with open("images/"+selected_file_1,mode='r',encoding="utf-8",errors="ignore") as none_img_1:
+          data_1 = none_img_1.read()
+          image_1 = Label(show,text=data_1)
+          image_1.pack()
+
+
+
+    plus_button=Button(documentFrame,height=2,width=3,text="+",command=attaching_file)
+    plus_button.place(x=5,y=10)
+    minus_button=Button(documentFrame,height=2,width=3,text="-",command=deleting_file)
+    minus_button.place(x=5,y=50)
     text=Label(documentFrame,text="Attached documents or image files.If you attach large email then email taken long time to send").place(x=50,y=10)
     cusventtree=ttk.Treeview(documentFrame, height=5)
     cusventtree["columns"]=["1","2","3"]
@@ -2316,6 +2367,7 @@ def view_invoice_recurring():
     cusventtree.heading("2",text="Filename")
     cusventtree.heading("3",text="Filesize")  
     cusventtree.place(x=50, y=45)
+    cusventtree.bind('<Double-Button-1>',show_file)
     
 
     fir4Frame=Frame(pop,height=190,width=210,bg="#f5f3f2")
