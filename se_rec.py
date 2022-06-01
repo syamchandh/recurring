@@ -1,3 +1,4 @@
+import subprocess
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
@@ -200,6 +201,7 @@ def generate_recurring_invoice_success():
   fbcursor.execute(sql,val)
   pdata = fbcursor.fetchall()
   # rectotalinput=0
+
   j = 0
   for i in pdata:
       main_rec_tree.insert(parent='', index='end', iid=i, text='', values=('',i[0], i[28], i[27], i[29], i[20], i[10]))
@@ -552,6 +554,7 @@ def search_invoice_recurring():
 
 
 
+
  
   
 
@@ -574,7 +577,7 @@ def view_invoice_recurring():
     pop=Toplevel(recurring_midFrame)
     pop.title("Invoice")
     pop.geometry("950x690+150+0")
-    
+
     edit_inv_fetch = main_rec_tree.item(main_rec_tree.focus())["values"][1]
     print(edit_inv_fetch)
     sql_edit = "SELECT * FROM Invoice WHERE invoiceid=%s"
@@ -1611,7 +1614,7 @@ def view_invoice_recurring():
     w = Canvas(firFrame, width=1, height=65, bg="#b3b3b3", bd=0)
     w.pack(side="left", padx=5)
     def calculator_recurring():
-      print("hello")
+      subprocess.Popen('C:\Windows\\System32\\calc.exe')
 
 
     calc= Button(firFrame,compound="top", text="Open\nCalculator",relief=RAISED, image=photo9,bg="#f5f3f2", fg="black", height=55, bd=1, width=55,command=calculator_recurring)
@@ -1682,7 +1685,7 @@ def view_invoice_recurring():
     invoice_number_entry=Entry(labelframe,width=25)
     invoice_number_entry.place(x=100,y=5,)
     orderdate=Label(labelframe,text="Invoice date").place(x=5,y=33)
-    invoice_date_entry=Entry(labelframe,width=20)
+    invoice_date_entry=DateEntry(labelframe,width=20)
     invoice_date_entry.place(x=150,y=33)
     checkvarStatus5=IntVar()
     duedate=Checkbutton(labelframe,variable = checkvarStatus5,text="Due date",onvalue =0 ,offvalue = 1).place(x=5,y=62)
@@ -1834,11 +1837,15 @@ def view_invoice_recurring():
     recurring_stop_date = DateEntry(recurring_labelframe,width=20)
     recurring_stop_date.place(x=360,y=95)
     def recalculator():  
-      date_1 = invoice_date_entry.get()
-      print(date_1)
-          
+      # date_1 = invoice_date_entry.get()
+      # print(date_1)
+      # print(recurring_period_entry.get())
+      
       if recurring_month_combo.get() == "Month(s)":
-        end_date = date_1 + datetime.timedelta(recurring_period_entry*365/12)
+        # end_date = date_1 + str(datetime.timedelta(int(recurring_period_entry.get())*365/12))
+        date_1 = datetime.datetime(str(invoice_date_entry.get()))
+        print(date_1)
+        end_date = date_1 + datetime.timedelta(days=int(recurring_period_entry.get()))
 
       elif recurring_month_combo.get() == "Day(s)":
         end_date = date_1 + str(datetime.timedelta(days=int(recurring_period_entry.get())))
@@ -1848,6 +1855,14 @@ def view_invoice_recurring():
       print(end_date)
       recurring_next_invoice_date.delete(0,'end')
       recurring_next_invoice_date.insert(0, end_date.strftime('%m/%d/%y'))
+    # def recalculatorr():
+    #   date_1 = str(datetime.datetime(invoice_date_entry.get_date(), "%m/%d/%y"))
+ 
+    #   end_date = date_1 + datetime.timedelta(days=int(recurring_period_entry.get()))
+    #   print(end_date)
+ 
+      # converted_date.config(text=f"Date: {end_date.strftime('%m/%d/%Y')}")
+
     recurring_recalc = Button(recurring_labelframe,compound=LEFT,image=recalc,text="Recalculate",width=80,height=12,command=recalculator)
     recurring_recalc.place(x=540,y=70)
 
