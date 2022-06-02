@@ -204,7 +204,7 @@ def generate_recurring_invoice_success():
 
   j = 0
   for i in pdata:
-      main_rec_tree.insert(parent='', index='end', iid=i, text='', values=('',i[0], i[26], i[25], i[29], i[20], i[10]))
+      main_rec_tree.insert(parent='', index='end', iid=i, text='', values=('',i[0], i[26], i[24], i[29], i[20], i[10]))
       j += 1
   #  if result=='ok':  
   messagebox.showinfo("F-Billing Revolution 2022", "Recurring invoices successfully generated.")
@@ -1720,17 +1720,17 @@ def view_invoice_recurring():
     terms_entry['values'] = tdata
     terms_entry.bind("<<ComboboxSelected>>")
     ee1.delete(0, END)#buisiness name
-    ee1.insert(0,rec_edit_inv_data[18])
+    ee1.insert(0,rec_edit_inv_data[20])
     ee2.delete('1.0',END)#address
-    ee2.insert('1.0',rec_edit_inv_data[19])
+    ee2.insert('1.0',rec_edit_inv_data[21])
     ee3.delete(0, END)#ship to customer name
-    ee3.insert(0, rec_edit_inv_data[20])
+    ee3.insert(0, rec_edit_inv_data[22])
     ee4.delete('1.0',END)#ship address
-    ee4.insert('1.0',rec_edit_inv_data[21])
+    ee4.insert('1.0',rec_edit_inv_data[23])
     ee5.delete(0,END)#email
-    ee5.insert(0,rec_edit_inv_data[22])
+    ee5.insert(0,rec_edit_inv_data[24])
     ee6.delete(0,END)#smsnumber
-    ee6.insert(0,rec_edit_inv_data[23])
+    ee6.insert(0,rec_edit_inv_data[25])
 
 
     fir2Frame=Frame(pop, height=150,width=100,bg="#f5f3f2")
@@ -1829,32 +1829,32 @@ def view_invoice_recurring():
     recurring_month_combo.place(x=360,y=45)
     recurring_month_combo['values'] = mdata_1
     recurring_next_inv_label = Label(recurring_labelframe,text="Next Invoice").place(x=280,y=70)
-    recurring_next_invoice_date = Entry(recurring_labelframe,width=20)
+    recurring_next_invoice_date = DateEntry(recurring_labelframe,width=20)
     recurring_next_invoice_date.place(x=360,y=70)
     checkstopStatus_1 = IntVar()
     recurring_stop_check = Checkbutton(recurring_labelframe,variable=checkstopStatus_1,text="Stop recurring after",onvalue=1,offvalue=0)
     recurring_stop_check.place(x=225,y=95)
     recurring_stop_date = DateEntry(recurring_labelframe,width=20)
     recurring_stop_date.place(x=360,y=95)
-    # def recalculator():  
-    #   # date_1 = invoice_date_entry.get()
-    #   # print(date_1)
-    #   # print(recurring_period_entry.get())
+    def recalculator():  
+      # date_1 = invoice_date_entry.get()
+      # print(date_1)
+      # print(recurring_period_entry.get())
       
-    #   if recurring_month_combo.get() == "Month(s)":
-    #     # end_date = date_1 + str(datetime.timedelta(int(recurring_period_entry.get())*365/12))
-    #     date_1 = datetime.datetime(str(invoice_date_entry.get()))
-    #     print(date_1)
-    #     end_date = date_1 + datetime.timedelta(days=int(recurring_period_entry.get()))
+      if recurring_month_combo.get() == "Month(s)":
+        # end_date = date_1 + str(datetime.timedelta(int(recurring_period_entry.get())*365/12))
+        date_1 = datetime.datetime(str(invoice_date_entry.get()))
+        print(date_1)
+        end_date = date_1 + datetime.timedelta(days=int(recurring_period_entry.get()))
 
-    #   elif recurring_month_combo.get() == "Day(s)":
-    #     end_date = date_1 + str(datetime.timedelta(days=int(recurring_period_entry.get())))
+      elif recurring_month_combo.get() == "Day(s)":
+        end_date = date_1 + str(datetime.timedelta(days=int(recurring_period_entry.get())))
         
           
           
-    #   print(end_date)
-    #   recurring_next_invoice_date.delete(0,'end')
-    #   recurring_next_invoice_date.insert(0, end_date.strftime('%m/%d/%y'))
+      print(end_date)
+      recurring_next_invoice_date.delete(0,'end')
+      recurring_next_invoice_date.insert(0, end_date.strftime('%m/%d/%y'))
     # def recalculatorr():
     #   date_1 = str(datetime.datetime(invoice_date_entry.get_date(), "%m/%d/%y"))
  
@@ -1863,7 +1863,7 @@ def view_invoice_recurring():
  
       # converted_date.config(text=f"Date: {end_date.strftime('%m/%d/%Y')}")
 
-    recurring_recalc = Button(recurring_labelframe,compound=LEFT,image=recalc,text="Recalculate",width=80,height=12)
+    recurring_recalc = Button(recurring_labelframe,compound=LEFT,image=recalc,text="Recalculate",width=80,height=12,command=recalculator)
     recurring_recalc.place(x=540,y=70)
 
 
