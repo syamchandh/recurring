@@ -22,7 +22,7 @@ from datetime import date
 import datetime
 
 fbilldb = mysql.connector.connect(
-    host="localhost", user="root", password="", database="f_billingsintgrtd", port="3306"
+    host="localhost", user="root", password="", database="fbillingsintgrtd", port="3306"
 )
 fbcursor = fbilldb.cursor()
 

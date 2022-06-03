@@ -1829,7 +1829,7 @@ def view_invoice_recurring():
     recurring_month_combo.place(x=360,y=45)
     recurring_month_combo['values'] = mdata_1
     recurring_next_inv_label = Label(recurring_labelframe,text="Next Invoice").place(x=280,y=70)
-    recurring_next_invoice_date = Entry(recurring_labelframe,width=20)
+    recurring_next_invoice_date = DateEntry(recurring_labelframe,width=20)
     recurring_next_invoice_date.place(x=360,y=70)
     checkstopStatus_1 = IntVar()
     recurring_stop_check = Checkbutton(recurring_labelframe,variable=checkstopStatus_1,text="Stop recurring after",onvalue=1,offvalue=0)
@@ -1868,13 +1868,13 @@ def view_invoice_recurring():
 
 
     recurring_period_entry.delete(0, END)
-    recurring_period_entry.insert(0, rec_edit_inv_data[26])
+    recurring_period_entry.insert(0, rec_edit_inv_data[24])
     recurring_month_combo.delete(0,END)
-    recurring_month_combo.insert(0,rec_edit_inv_data[27])
+    recurring_month_combo.insert(0,rec_edit_inv_data[25])
     recurring_next_invoice_date.delete(0,END)
-    recurring_next_invoice_date.insert(0,rec_edit_inv_data[28])
+    recurring_next_invoice_date.insert(0,rec_edit_inv_data[26])
     recurring_stop_date.delete(0,END)
-    recurring_stop_date.insert(0,rec_edit_inv_data[29])
+    recurring_stop_date.insert(0,rec_edit_inv_data[27])
 
     
     pay_labelframe_1 = LabelFrame(payementFrame,text="",font=("arial",15))
@@ -2263,35 +2263,37 @@ def view_invoice_recurring():
     discount_rate_entry=Entry(labelframe1,width=6)
     discount_rate_entry.place(x=460,y=5)
     discount_rate_entry.delete(0, END)
-    discount_rate_entry.insert(0, rec_edit_inv_data[17])
+    discount_rate_entry.insert(0, rec_edit_inv_data[15])
+    print(rec_edit_inv_data[13])
+    print("discount rate entry above")
 
     cost2=Label(labelframe1,text="Extra cost").place(x=35,y=35)
     extraname_entry=Entry(labelframe1,width=10)
     extraname_entry.place(x=115,y=35)
     extraname_entry.delete(0, END)
-    extraname_entry.insert(0, rec_edit_inv_data[14])
+    extraname_entry.insert(0, rec_edit_inv_data[12])
     tax=Label(labelframe1,text="Tax1").place(x=420,y=35)
     tax_entry=Entry(labelframe1,width=7)
     tax_entry.place(x=460,y=35)
     tax_entry.delete(0, END)
-    tax_entry.insert(0, rec_edit_inv_data[18])
+    tax_entry.insert(0, rec_edit_inv_data[16])
     template=Label(labelframe1,text="Template").place(x=37,y=70)
 
     template_entry=ttk.Combobox(labelframe1, value="",width=25)
     template_entry.place(x=115,y=70)
     template_entry.delete(0, END)
-    template_entry.insert(0, rec_edit_inv_data[15])
+    template_entry.insert(0, rec_edit_inv_data[13])
 
     sales=Label(labelframe1,text="Sales Person").place(x=25,y=100)
     sales_entry=Entry(labelframe1,width=18)
     sales_entry.place(x=115,y=100)
     sales_entry.delete(0, END)
-    sales_entry.insert(0, rec_edit_inv_data[16])
+    sales_entry.insert(0, rec_edit_inv_data[14])
     category=Label(labelframe1,text="Category").place(x=300,y=100)
     category_entry=Entry(labelframe1,width=22)
     category_entry.place(x=370,y=100)
     category_entry.delete(0, END)
-    category_entry.insert(0, rec_edit_inv_data[19])
+    category_entry.insert(0, rec_edit_inv_data[17])
     
     statusfrme = LabelFrame(labelframe1,text="Status",font=("arial",15))
     statusfrme.place(x=540,y=0,width=160,height=160)
@@ -2323,11 +2325,29 @@ def view_invoice_recurring():
     footer_combo.place(x=125,y=85)
     footer_combo.bind("<<ComboboxSelected>>")
 
-    text=Label(noteFrame,text="Private notes(not shown on invoice/order/estemates)").place(x=10,y=10)
-    e1=Text(noteFrame,width=100,height=7).place(x=10,y=32)
+    title_combo.delete(0,END)
+    title_combo.insert(0,rec_edit_inv_data[39])
+    header_combo.delete(0,END)
+    header_combo.insert(0,rec_edit_inv_data[40])
+    footer_combo.delete(0,END)
+    footer_combo.insert(0,rec_edit_inv_data[41])
 
-    e1=Text(termsFrame,width=100,height=9).place(x=10,y=10)
-    comment_txt_1=Text(commentFrame,width=100,height=9).place(x=10,y=22)
+    text=Label(noteFrame,text="Private notes(not shown on invoice/order/estemates)").place(x=10,y=10)
+    private_note_entry=Text(noteFrame,width=100,height=7)
+    private_note_entry.place(x=10,y=32)
+    private_note_entry.delete("1.0",END)
+    private_note_entry.insert("1.0",rec_edit_inv_data[45])
+
+    terms_entry=Text(termsFrame,width=100,height=9)
+    terms_entry.place(x=10,y=10)
+    terms_entry.delete("1.0",END)
+    terms_entry.insert("1.0",rec_edit_inv_data[35])
+
+
+    comments_entry=Text(commentFrame,width=100,height=9)
+    comments_entry.place(x=10,y=22)
+    comments_entry.delete("1.0",END)
+    comments_entry.insert("1.0",rec_edit_inv_data[44])
 
     
     ################### attatch file ###########################
@@ -2403,20 +2423,40 @@ def view_invoice_recurring():
     fir4Frame.place(x=740,y=520)
     summaryfrme = LabelFrame(fir4Frame,text="Summary",font=("arial",15))
     summaryfrme.place(x=0,y=0,width=200,height=170)
-    discount=Label(summaryfrme, text="Discount").place(x=0 ,y=0)
-    discount1=Label(summaryfrme, text="$0.00").place(x=130 ,y=0)
+    discount=Label(summaryfrme, text=str(rec_edit_inv_data[15]) + "" + "% Discount").place(x=0 ,y=0)
+    discount1=Label(summaryfrme, text=rec_edit_inv_data[31]).place(x=130 ,y=0)
     sub=Label(summaryfrme, text="Subtotal").place(x=0 ,y=21)
-    sub1=Label(summaryfrme, text="$0.00").place(x=130 ,y=21)
+
+    company_sql = "SELECT * FROM company"
+    fbcursor.execute(company_sql,)
+    company_data = fbcursor.fetchone()
+
+    if company_data[12] == "1":
+      sub_data = 0.0
+      for record in sub_rec_tree.get_children():
+        sub_data += float(sub_rec_tree.item(record,'values')[6])
+      sub1_1=Label(summaryfrme, text=sub_data - rec_edit_inv_data[31])
+    elif company_data[12] == "2":
+      sub_data = 0.0
+      for record in sub_rec_tree.get_children():
+        sub_data += float(sub_rec_tree.item(record,'values')[7])
+      sub1_1=Label(summaryfrme, text=sub_data - rec_edit_inv_data[31])
+    elif company_data[12] == "3":
+      sub_data = 0.0
+      for record in sub_rec_tree.get_children():
+        sub_data += float(sub_rec_tree.item(record,'values')[8])
+
+    sub1=Label(summaryfrme, text=sub_data - rec_edit_inv_data[31]).place(x=130 ,y=21)
     tax=Label(summaryfrme, text="Tax1").place(x=0 ,y=42)
-    tax1=Label(summaryfrme, text="$0.00").place(x=130 ,y=42)
+    tax1=Label(summaryfrme, text=rec_edit_inv_data[16]).place(x=130 ,y=42)
     cost=Label(summaryfrme, text="Extra cost").place(x=0 ,y=63)
-    cost=Label(summaryfrme, text="$0.00").place(x=130 ,y=63)
+    costt1=Label(summaryfrme, text=rec_edit_inv_data[12]).place(x=130 ,y=63)
     order=Label(summaryfrme, text="Order total").place(x=0 ,y=84)
-    order1=Label(summaryfrme, text="$0.00").place(x=130 ,y=84)
+    order1=Label(summaryfrme, text=rec_edit_inv_data[8]).place(x=130 ,y=84)
     total=Label(summaryfrme, text="Total paid").place(x=0 ,y=105)
-    total1=Label(summaryfrme, text="$0.00").place(x=130 ,y=105)
+    total1=Label(summaryfrme, text=rec_edit_inv_data[9]).place(x=130 ,y=105)
     balance=Label(summaryfrme, text="Balance").place(x=0 ,y=126)
-    balance1=Label(summaryfrme, text="$0.00").place(x=130 ,y=126)
+    balance1=Label(summaryfrme, text=rec_edit_inv_data[10]).place(x=130 ,y=126)
 
     fir5Frame=Frame(pop,height=38,width=210)
     fir5Frame.place(x=735,y=485)
